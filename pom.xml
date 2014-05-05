@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>io.devyse.scheduler</groupId>
+	<artifactId>scheduler-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Course Scheduler Parent</name>
+	<description>Course Scheduler Parent Project</description>
+	<url>http://coursescheduler.io</url>
+	<inceptionYear>2009</inceptionYear>
+  
+	<organization>
+		<name>Devyse.io</name>
+		<url>http://devyse.io</url>
+	</organization>
+  
+	<developers>
+		<developer>
+			<id>mike</id>
+			<name>Mike Reinhold</name>
+			<email>mike@devyse.io</email>
+		</developer>
+		
+		<developer>
+			<id>alex</id>
+			<name>Alex Thomson</name>
+		</developer>
+		
+		<developer>
+			<id>phil</id>
+			<name>Phil DeMonaco</name>
+		</developer>
+	</developers>
+  
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL)</name>
+	  		<url>http://www.gnu.org/licenses/gpl.txt</url>
+		</license>
+	</licenses>
+  
+	<scm>
+		<url>https://github.com/CourseScheduler/scheduler</url>
+		<connection>git@github.com:CourseScheduler/scheduler.git</connection>
+	</scm>
+  
+	<distributionManagement>
+		<!-- TODO
+		<site>
+			<id>www</id>
+			<url></url>
+		</site>
+		-->
+		
+		<!--  TODO
+		<repository>
+			<id></id>
+		</repository>
+		-->
+	</distributionManagement>
+  
+	<modules>
+	  <module>scheduler-core</module>
+	</modules>
+  
+	<properties>
+		<!-- Source Code and Target JVM version -->
+		<jdk.version>1.8</jdk.version>
+		
+		<!-- Source file encoding -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Dependency versions -->
+		<slf4j.version>1.7.7</slf4j.version>
+		
+		<!-- TODO -->
+	</properties>
+  
+	<profiles>
+		<!-- TODO -->
+	</profiles>
+  
+    <repositories>
+		<!-- Repository for empty logging interfaces, used by slf4j  -->
+		<repository>
+			<id>version99</id>
+			<url>http://version99.qos.ch/</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<!-- TODO -->
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- SLF4j logging framework -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+  				<artifactId>slf4j-api</artifactId>
+  				<version>${slf4j.version}</version>
+			</dependency>
+			<!-- TODO Redirect JUL to SLF4j -->
+			<!-- TODO Redirect log4j to SLF4j -->
+			<!-- Redirect JCL to SLF4j -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<!-- Mask other JCL dependencies via empty JCL -->
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>99-empty</version>
+			</dependency>
+			
+			<!-- TODO Other dependencies-->
+		</dependencies>
+	</dependencyManagement>
+  
+	<build>
+		<!-- TODO -->
+	</build>
+  
+</project>

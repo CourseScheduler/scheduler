@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <artifactId>scheduler-parent</artifactId>
+        <groupId>io.devyse.scheduler</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>scheduler-core</artifactId>
+    <packaging>jar</packaging>
+	<name>Course Scheduler Core</name>
+	<description>Course Scheduler Core Components</description>
+	
+	<url>http://coursecheduler.io</url>
+	
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL)</name>
+	  		<url>http://www.gnu.org/licenses/gpl.txt</url>
+		</license>
+	</licenses>
+	
+    <dependencies>
+        <!-- TODO -->
+    </dependencies>
+
+    <build>
+        <!-- TODO -->
+    </build>
+</project>
