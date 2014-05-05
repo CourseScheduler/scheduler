@@ -23,6 +23,10 @@
 		</license>
 	</licenses>
 	
+	<profiles>
+		<!-- TODO -->
+	</profiles>
+	
     <dependencies>
         <!-- TODO -->
     </dependencies>

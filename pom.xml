@@ -73,14 +73,96 @@
 		<!-- Source file encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
+		<!-- Copyright information -->
+		<codehaus.licenseName>gpl_v3</codehaus.licenseName>
+		<copyright.start>2010</copyright.start>
+		<copyright.end>2014</copyright.end>
+		<copyright.holder>Devyse.io</copyright.holder>
+		
 		<!-- Dependency versions -->
 		<slf4j.version>1.7.7</slf4j.version>
+		
+		<!-- Plugin versions -->
+		<mycila.license.version>2.6</mycila.license.version>
+		<codehaus.license.version>1.6</codehaus.license.version>
 		
 		<!-- TODO -->
 	</properties>
   
 	<profiles>
-		<!-- TODO -->
+		<!-- Profile for skipping tests -->
+		<profile>
+			<id>skipTests</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+	    </profile>
+	    
+	    <!-- Profile for executing license checks & updates -->
+	    <profile>
+	    	<id>license</id>
+	    	<build>
+				<plugins>
+				<!-- Use the Mycila plugin to update the file headers (it seems to work better) -->
+					<plugin>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${mycila.license.version}</version>
+						<configuration>
+							<quiet>false</quiet>
+							<failIfMissing>true</failIfMissing>
+							<aggregate>true</aggregate>
+							<includes>
+								<include>src/**/*.java</include>
+							</includes>
+							<useDefaultExcludes>true</useDefaultExcludes>
+							<useDefaultMapping>true</useDefaultMapping>
+							<header>src/main/license/code-header.txt</header>
+							<headerDefinitions>
+								<headerDefinition>src/main/license/javadoc-header.xml</headerDefinition>
+							</headerDefinitions>
+							<properties>
+								<copyright.start>${copyright.start}</copyright.start>
+								<copyright.end>	${copyright.end}</copyright.end>
+								<copyright.holder>${copyright.holder}</copyright.holder>
+							</properties>
+						</configuration>
+						<executions>
+							<execution>
+								<id>fileLicenseUpdate</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Use CodeHaus to update the project license and third party license -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>${codehaus.license.version}</version>
+						<configuration>
+							 <licenseName>${codehaus.licenseName}</licenseName>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-project-licenses</id>
+								<goals>
+									<goal>download-licenses</goal>
+									<goal>update-project-license</goal>
+									<goal>aggregate-add-third-party</goal>
+								</goals>
+								<phase>generate-resources</phase>
+							</execution>
+							<execution>
+								<id>check</id>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+	    </profile>
 	</profiles>
   
     <repositories>
@@ -122,7 +204,7 @@
 		</dependencies>
 	</dependencyManagement>
   
-	<build>
+	<build>		
 		<!-- TODO -->
 	</build>
   
