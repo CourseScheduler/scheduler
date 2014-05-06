@@ -1,5 +1,5 @@
 /**
- * @(#) package-info.java
+ * @(#) Period.java
  *
  * This file is part of the Course Scheduler, an open source, cross platform
  * course scheduling tool, configurable for most universities.
@@ -21,13 +21,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+package io.devyse.scheduler.model;
 
 /**
- * Data model interfaces and abstract base classes for working with
- * university and course data.
- * 
+ * Represent a specific time block for a course meeting. Contains
+ * the day of the week, start time, end time, and time zone of the 
+ * campus. 
+ *
  * @author Mike Reinhold
- * 
- * @since 0.0.1
+ *
  */
-package io.devyse.scheduler.model;
+public interface Period extends Comparable<AbstractPeriod>{
+	
+}
