@@ -81,6 +81,7 @@
 		
 		<!-- Dependency versions -->
 		<slf4j.version>1.7.7</slf4j.version>
+		<testng.version>6.8.8</testng.version>
 		
 		<!-- Plugin versions -->
 		<mycila.license.version>2.6</mycila.license.version>
@@ -174,6 +175,15 @@
 	</repositories>
 	
 	<dependencies>
+			
+		<!-- Testing Framework -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+			
 		<!-- TODO -->
 	</dependencies>
 
@@ -198,7 +208,7 @@
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>99-empty</version>
-			</dependency>
+			</dependency>			
 			
 			<!-- TODO Other dependencies-->
 		</dependencies>
