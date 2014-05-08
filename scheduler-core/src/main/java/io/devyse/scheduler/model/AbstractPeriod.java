@@ -24,9 +24,9 @@
 package io.devyse.scheduler.model;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
@@ -45,21 +45,14 @@ public abstract class AbstractPeriod implements Period{
 	private DayOfWeek dayOfWeek;
 	
 	/**
-	 * Start time (in the timeZone) for the time block
+	 * Start time and timezone for the time block
 	 */
-	private LocalTime startTime;
+	private OffsetTime startTime;
 	
 	/**
-	 * End time (in the timeZone) for the time block
+	 * End time and timezone for the time block
 	 */
-	private LocalTime endTime;
-	
-	//ANALYZE should we store the time zone with times instead of storing the timezone separate. We would still provide the local times + timezone constructor, but maybe it makes more sense to store in a zoned time
-	/**
-	 * The time zone for the time block, should be the time
-	 * zone of the campus in which the course meeting occurs.
-	 */
-	private ZoneOffset timeZone;
+	private OffsetTime endTime;
 	
 	/* (non-Javadoc)
 	 * @see io.devyse.scheduler.model.Period#getDayOfWeek()
@@ -71,22 +64,36 @@ public abstract class AbstractPeriod implements Period{
 	/* (non-Javadoc)
 	 * @see io.devyse.scheduler.model.Period#getStartTime()
 	 */
-	public LocalTime getStartTime() {
+	public OffsetTime getStartTime() {
 		return this.startTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Period#getLocalStartTime()
+	 */
+	public LocalTime getLocalStartTime() {
+		return this.getStartTime().toLocalTime();
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.devyse.scheduler.model.Period#getEndTime()
 	 */
-	public LocalTime getEndTime() {
+	public OffsetTime getEndTime() {
 		return this.endTime;
 	}
 	
 	/* (non-Javadoc)
-	 * @see io.devyse.scheduler.model.Period#getTimeZone()
+	 * @see io.devyse.scheduler.model.Period#getLocalEndTime()
 	 */
-	public ZoneOffset getTimeZone() {
-		return this.timeZone;
+	public LocalTime getLocalEndTime() {
+		return this.getEndTime().toLocalTime();
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Period#getDuration()
+	 */
+	public Duration getDuration() {
+		return Duration.between(this.getStartTime(), this.getEndTime());
 	}
 
 	/**
@@ -99,22 +106,15 @@ public abstract class AbstractPeriod implements Period{
 	/**
 	 * @param startTime the startTime to set
 	 */
-	private void setStartTime(LocalTime start) {
+	private void setStartTime(OffsetTime start) {
 		this.startTime = start;
 	}
 
 	/**
 	 * @param endTime the endTime to set
 	 */
-	private void setEndTime(LocalTime end) {
+	private void setEndTime(OffsetTime end) {
 		this.endTime = end;
-	}
-
-	/**
-	 * @param timeZone the timeZone to set
-	 */
-	private void setTimeZone(ZoneOffset timeZone) {
-		this.timeZone = timeZone;
 	}
 
 	/**
@@ -122,20 +122,33 @@ public abstract class AbstractPeriod implements Period{
 	 * end time, and timezone.
 	 *
 	 * @param dow the day of the week
-	 * @param startTime the start time, using the zone as a reference
-	 * @param endTime the end time, using the zone as a reference
+	 * @param start the local start time, uses the zone as a reference
+	 * @param end the local end time, uses the zone as a reference
 	 * @param zone the time zone, likely based on campus location
 	 */
 	protected AbstractPeriod(DayOfWeek dow, LocalTime start, LocalTime end, ZoneOffset zone) {
 		super();
 		
 		this.setDayOfWeek(dow);
-		this.setStartTime(start);
-		this.setEndTime(end);
-		this.setTimeZone(zone);
+		this.setStartTime(OffsetTime.of(start, zone));
+		this.setEndTime(OffsetTime.of(end, zone));
 	}
 	
-	//ANALYZE other constructors with different format times and zones
+	/**
+	 * Create a new AbstractPeriod with the appropriate day of week, start time,
+	 * and end time
+	 *
+	 * @param dow the day of the week
+	 * @param start the zoned start time
+	 * @param end the zoned end time
+	 */
+	protected AbstractPeriod(DayOfWeek dow, OffsetTime start, OffsetTime end) {
+		super();
+		
+		this.setDayOfWeek(dow);
+		this.setStartTime(start);
+		this.setEndTime(end);
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -145,11 +158,9 @@ public abstract class AbstractPeriod implements Period{
 		int value = this.getDayOfWeek().compareTo(other.getDayOfWeek());
 		
 		if(value == 0) {
-			value = OffsetTime.of(this.getStartTime(), this.getTimeZone()).compareTo(
-					OffsetTime.of(other.getStartTime(), other.getTimeZone()));
+			value = this.getStartTime().compareTo(other.getStartTime());
 			if(value == 0) {
-				value = OffsetTime.of(this.getEndTime(), this.getTimeZone()).compareTo(
-						OffsetTime.of(other.getEndTime(), other.getTimeZone()));
+				value = this.getEndTime().compareTo(other.getEndTime());
 			}
 		}
 		return value;
@@ -163,7 +174,6 @@ public abstract class AbstractPeriod implements Period{
 		if(other instanceof Period) {
 			Period comp = (Period)other;
 			if(!this.getDayOfWeek().equals(comp.getDayOfWeek())) return false;
-			if(!this.getTimeZone().equals(comp.getTimeZone())) return false;
 			if(!this.getStartTime().equals(comp.getStartTime())) return false;
 			if(!this.getEndTime().equals(comp.getEndTime())) return false;
 			return true;
@@ -178,8 +188,7 @@ public abstract class AbstractPeriod implements Period{
 		return Objects.hash(
 			this.getDayOfWeek(),
 			this.getEndTime(),
-			this.getStartTime(),
-			this.getTimeZone()
+			this.getStartTime()
 		);
 	}
 }

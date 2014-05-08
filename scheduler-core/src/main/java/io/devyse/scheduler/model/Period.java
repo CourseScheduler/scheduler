@@ -24,9 +24,9 @@
 package io.devyse.scheduler.model;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.OffsetTime;
 
 /**
  * Represent a specific time block for a course meeting. Contains
@@ -47,27 +47,40 @@ public interface Period extends Comparable<Period>{
 	public DayOfWeek getDayOfWeek();
 	
 	/**
-	 * The time at which the Period starts. This time is relative to the
-	 * time zone returned by {@link #getTimeZone()}.
+	 * The time at which the Period starts. This time includes the campus
+	 * timezone information.
 	 *
 	 * @return the start time of the Period
 	 */
-	public LocalTime getStartTime();
+	public OffsetTime getStartTime();
 	
 	/**
-	 * The time at which the Period ends. This time is relative to the
-	 * time zone returned by {@link #getTimeZone()}.
+	 * The time at which the Period starts in local time of the campus
+	 *
+	 * @return the local start time of the period
+	 */
+	public LocalTime getLocalStartTime();
+	
+	/**
+	 * The time at which the Period ends. This time includes the campus
+	 * timezone information.
 	 *
 	 * @return the end time of the Period
 	 */
-	public LocalTime getEndTime();
+	public OffsetTime getEndTime();
 	
 	/**
-	 * The time zone which provides reference for the start and end times 
-	 * of the Period. This is usually the time zone in which the Campus for
-	 * the Meeting is located.
+	 * The time at which the Period ends in local time of the campus
 	 *
-	 * @return the time zone for this Period
+	 * @return the local end time of the period
 	 */
-	public ZoneOffset getTimeZone();
+	public LocalTime getLocalEndTime();
+	
+	/**
+	 * The length of the period as defined by the start and end times
+	 *
+	 * @return the duration of the period
+	 */
+	public Duration getDuration();
+	
 }

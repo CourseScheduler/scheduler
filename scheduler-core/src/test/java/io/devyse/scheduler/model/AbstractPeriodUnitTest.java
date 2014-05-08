@@ -25,8 +25,10 @@ package io.devyse.scheduler.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZoneOffset;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -221,15 +223,44 @@ public class AbstractPeriodUnitTest {
 	}
 	
 	/**
-	 * TODO Describe this type
+	 * Confirm that the duration between start and end of the period is calculated properly
+	 *
+	 */
+	@Test
+	public void confirmDuration() {
+		Assert.assertEquals(a1.getDuration().toMinutes(), (long)(1.5*TEST_DURATION), "Duration between start and end did not match expected number of minutes");
+	}
+	
+	/**
+	 * Stub implementation of Period via AbstractPeriod to unit test the base functionality
+	 * of the AbstractPeriod class (constructors, equals, hashCode, compareTo, duration, etc)
 	 *
 	 * @author Mike Reinhold
 	 *
 	 */
 	public static class PeriodStub extends AbstractPeriod{
 
+		/**
+		 * Create a new PeriodStub using local times and a specific time zone
+		 * 
+		 * @param dow the day of the week
+		 * @param start the local start time
+		 * @param end the local end time
+		 * @param zone the time zone reference for the local times
+		 */
 		protected PeriodStub(DayOfWeek dow, LocalTime start, LocalTime end,	ZoneOffset zone) {
 			super(dow, start, end, zone);
+		}
+		
+		/**
+		 * Create a new PeriodStub using the zoned times
+		 *
+		 * @param dow the day of the week
+		 * @param start the zoned start time
+		 * @param end the zoned end time
+		 */
+		protected PeriodStub(DayOfWeek dow, OffsetTime start, OffsetTime end) {
+			super(dow, start, end);
 		}
 	}
 }
