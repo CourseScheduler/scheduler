@@ -82,6 +82,7 @@
 		<!-- Dependency versions -->
 		<slf4j.version>1.7.7</slf4j.version>
 		<testng.version>6.8.8</testng.version>
+		<mockito.version>1.9.5</mockito.version>
 		
 		<!-- Plugin versions -->
 		<mycila.license.version>2.6</mycila.license.version>
@@ -176,14 +177,20 @@
 	
 	<dependencies>
 			
-		<!-- Testing Framework -->
+		<!-- Testing Framework for unit and integration testing -->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
 			<scope>test</scope>
 		</dependency>
-			
+		<!-- Mocking Framework to support unit tests -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- TODO -->
 	</dependencies>
 
