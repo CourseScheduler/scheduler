@@ -175,8 +175,7 @@ public class AbstractPeriodUnitTest {
 	 * Note:
 	 * 	Order for AbstractPeriod implies the following:
 	 * 		Sunday < Monday < Tuesday < Wednesday < Thursday < Friday < Saturday
-	 * 		Start and end time will use the time zone to become properly offset
-	 * 			before making comparisons
+	 * 		Start and end time are compared first as UTC then with local time to preserve consistency with equals
 	 * 		Start time takes priority over end time
 	 * 		End time only matters when start time is the same
 	 *
@@ -189,29 +188,29 @@ public class AbstractPeriodUnitTest {
 		ctAssert.assertEquals(a2.compareTo(a1), 0, "References to same instance should be equal, regardless of comparison direction");
 		ctAssert.assertEquals(a1.compareTo(a3), 0, "CompareTo should be consistent with equals() for equal instances");
 		ctAssert.assertEquals(a3.compareTo(a1), 0, "CompareTo should be consistent with equals() for equal instance, regardless of comparison direction");
-		ctAssert.assertEquals(a1.compareTo(a4), 0, "Semantics for same times in different zones should yield equal (valid violation of consistency with equals()) earlier zone");
-		ctAssert.assertEquals(a1.compareTo(a5), 0, "Semantics for same times in different zones should yield equal (valid violation of consistency with equals()) later zone");
 		
 		ctAssert.assertNotEquals(a1.compareTo(b1), 0, "CompareTo should be consistent with equals() for non-equal instance");
 		ctAssert.assertNotEquals(b1.compareTo(a1), 0, "CompareTo should be consistent with equals() for non-equal instance, regardless of comparison direction");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end))");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), Math.signum(e1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser zone)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), Math.signum(e2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater zone)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(-b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(-b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(-c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(-c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(-d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end))");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(-d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), Math.signum(-e1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser zone)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), Math.signum(-e2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater zone)");
 				
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), -1, "Negative result expected for instance with lesser day");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), -1, "Negative result expected for instance with lesser start");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), -1, "Negative result expected for instance with lesser end");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), -1, "Negative result expected for instance with lesser zone");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), 1.0f, "Positive result expected for instance with lesser day");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), 1.0f, "Positive result expected for instance with lesser start");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), 1.0f, "Positive result expected for instance with lesser end");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), -1.0f, "Negative result expected for instance with lesser zone");	//timezones are sorted descending
+		ctAssert.assertEquals(Math.signum(a1.compareTo(a4)), 1.0f, "Positive result expected for instance with same UTC but lesser zone");
 
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), 1, "Positive result expected for instance with greater day");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), -1, "Positive result expected for instance with greater start");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), -1, "Positive result expected for instance with greater end");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), -1, "Positive result expected for instance with greater zone");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), -1.0f, "Negative result expected for instance with greater day");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), -1.0f, "Negative result expected for instance with greater start");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), -1.0f, "Negative result expected for instance with greater end");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), 1.0f, "Positive result expected for instance with greater zone");	//timezones are sorted descending
+		ctAssert.assertEquals(Math.signum(a1.compareTo(a5)), -1.0f, "Negative result expected for instance with same UTC but greater zone");
 		
 		ctAssert.assertEquals(Math.signum(b1.compareTo(a1)), Math.signum(a1.compareTo(b2)), "Transitivity expected for instances differing on day");
 		ctAssert.assertEquals(Math.signum(c1.compareTo(a1)), Math.signum(a1.compareTo(c2)), "Transitivity expected for instances differing on start");
@@ -221,6 +220,12 @@ public class AbstractPeriodUnitTest {
 		ctAssert.assertAll();
 	}
 	
+	/**
+	 * TODO Describe this type
+	 *
+	 * @author Mike Reinhold
+	 *
+	 */
 	public static class PeriodStub extends AbstractPeriod{
 
 		protected PeriodStub(DayOfWeek dow, LocalTime start, LocalTime end,	ZoneOffset zone) {
