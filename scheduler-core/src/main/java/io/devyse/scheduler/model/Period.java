@@ -27,6 +27,8 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 
 /**
  * Represent a specific time block for a course meeting. Contains
@@ -83,4 +85,27 @@ public interface Period extends Comparable<Period>{
 	 */
 	public Duration getDuration();
 	
+	/**
+	 * Check if two periods overlap. This uses the offset (zoned) start and
+	 * end times of the Period as well as the day of week to determine if the
+	 * Periods overlap at all.
+	 *
+	 * @param other the other Period to check for overlap with this Period
+	 * 
+	 * @return if the other Period overlaps with this Period
+	 */
+	public boolean overlapsWith(Period other);
+	
+	/**
+	 * Gets the textual representation of the Period using the specified
+	 * text style for the day of the week. The Locale from the formatter
+	 * is also applied to the text style. The formatter is applied to the
+	 * start and end times
+	 *
+	 * @param style
+	 * @param formatter
+	 * 
+	 * @return
+	 */
+	public String toString(TextStyle style, DateTimeFormatter formatter);
 }

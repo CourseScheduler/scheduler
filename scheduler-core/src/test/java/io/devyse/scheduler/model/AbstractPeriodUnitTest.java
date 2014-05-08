@@ -232,6 +232,31 @@ public class AbstractPeriodUnitTest {
 	}
 	
 	/**
+	 * Confirm that Period overlaps are properly detected.
+	 * 
+	 * Periods overlap if they occur on the same day and there is at least
+	 * one minute that is present in both Periods (timeline - local time + timezone) 
+	 *
+	 */
+	@Test
+	public void confirmOverlap() {
+		SoftAssert olAssert = new SoftAssert();
+		
+		olAssert.assertEquals(a1.overlapsWith(b1), false, "Periods on different days should not overlap");
+		olAssert.assertEquals(b1.overlapsWith(a1), false, "Periods on different days should not overlap");
+		olAssert.assertEquals(a1.overlapsWith(b2), false, "Periods on different days should not overlap");
+		olAssert.assertEquals(b2.overlapsWith(a1), false, "Periods on different days should not overlap");
+		
+		olAssert.assertEquals(a1.overlapsWith(c1), true, "This Period with start time between other Period start and end times should overlap");
+		olAssert.assertEquals(a1.overlapsWith(c2), true, "Other Period with start time between this Period start and end times should overlap");
+		
+		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start or end time of other Period between this Period start and end times should not overlap");
+		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start or end time of other Period between this Period start and end times should not overlap");
+		
+		olAssert.assertAll();
+	}
+	
+	/**
 	 * Stub implementation of Period via AbstractPeriod to unit test the base functionality
 	 * of the AbstractPeriod class (constructors, equals, hashCode, compareTo, duration, etc)
 	 *

@@ -28,6 +28,8 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.Objects;
 
 /**
@@ -94,6 +96,44 @@ public abstract class AbstractPeriod implements Period{
 	 */
 	public Duration getDuration() {
 		return Duration.between(this.getStartTime(), this.getEndTime());
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Period#overlapsWith(io.devyse.scheduler.model.Period)
+	 */
+	public boolean overlapsWith(Period other) {
+		if(this.getDayOfWeek().equals(other.getDayOfWeek())) {
+			return (this.getStartTime().isAfter(other.getStartTime()) && this.getStartTime().isBefore(other.getEndTime())) ||
+					(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()));
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(this.getDayOfWeek());
+		sb.append(" ");
+		sb.append(this.getStartTime());
+		sb.append("-");						//TODO what should this string look like? 
+		sb.append(this.getEndTime());
+		
+		return sb.toString();
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Period#toString(java.time.format.TextStyle, java.time.format.DateTimeFormatter)
+	 */
+	public String toString(TextStyle style, DateTimeFormatter formatter) {
+		StringBuilder sb = new StringBuilder();
+		
+		//TODO build the string and format it
+		
+		return sb.toString();
 	}
 
 	/**
