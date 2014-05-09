@@ -131,7 +131,11 @@ public abstract class AbstractPeriod implements Period{
 	public String toString(TextStyle style, DateTimeFormatter formatter) {
 		StringBuilder sb = new StringBuilder();
 		
-		//TODO build the string and format it
+		sb.append(this.getDayOfWeek().getDisplayName(style, formatter.getLocale()));
+		sb.append(" ");
+		sb.append(this.getStartTime().format(formatter));
+		sb.append("-");						//TODO what should this string look like
+		sb.append(this.getEndTime().format(formatter));
 		
 		return sb.toString();
 	}
