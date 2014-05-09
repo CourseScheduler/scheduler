@@ -34,4 +34,44 @@ package io.devyse.scheduler.model;
  */
 public interface Meeting extends Comparable<Meeting> {
 	
+	/**
+	 * The time Period in which the Meeting occurs. This method
+	 * returns null if the Meeting time Period is not yet announced
+	 *
+	 * @return the time Period for this meeting
+	 */
+	public Period getPeriod();
+	
+	/**
+	 * The name of the campus at which the Meeting occurs. This 
+	 * method returns null if the Meeting location is not yet
+	 * announced
+	 *
+	 * @return the campus portion of the location
+	 */
+	public String getCampus();
+	
+	/**
+	 * The name or address of the building at which the Meeting
+	 * occurs. This method returns null if the Meeting location
+	 * is not yet announced
+	 *
+	 * @return the building portion of the location
+	 */
+	public String getBuilding();
+	
+	/**
+	 * The name or number of the room in which this Meeting occurs.
+	 * This method returns null if the Meeting location is not
+	 * yet announced
+	 *
+	 * @return the building room portion of the location
+	 */
+	public String getRoom();
+	
+	//TODO getMeetingType
+	//TODO getInstructor
+	
+	//TODO what about add/drop dates, date range, length (number of weeks)
+	
 }
