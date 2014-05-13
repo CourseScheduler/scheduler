@@ -59,12 +59,12 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	private OffsetTime endTime;
 	
 	/**
-	 * TODO Describe this field
+	 * Start date for the time block
 	 */
 	private LocalDate startDate;
 	
 	/**
-	 * TODO Describe this field
+	 * End date for the time block
 	 */
 	private LocalDate endDate;
 	
@@ -135,11 +135,50 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	 * @see io.devyse.scheduler.model.DateTimeBlock#overlapsWith(io.devyse.scheduler.model.DateTimeBlock)
 	 */
 	public boolean overlapsWith(DateTimeBlock other) {
-		if(this.getDayOfWeek().equals(other.getDayOfWeek())) {	//TODO add date range comparison
-			return (this.getStartTime().isAfter(other.getStartTime()) && this.getStartTime().isBefore(other.getEndTime())) ||
-					(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()));
+		if(this.getDayOfWeek().equals(other.getDayOfWeek())) {
+			return this.timeOverlapsWith(other) && this.dateOverlapsWith(other);
 		}
 		return false;
+	}
+	
+	/**
+	 * Check if the time ranges for the two time blocks overlap.
+	 * This method ignores the date range and day of the week.
+	 * This method DOES NOT consider two time blocks that overlap
+	 * only on the start/end minute to be "overlapping" - aka
+	 * some universities publish course times as 8-10AM, 10-11AM - 
+	 * this is not considered overlapping (scheduling algorithm
+	 * options can be used to ensure a minimum passing period)
+	 *
+	 * @param other the DateTimeBlock to check for overlap
+	 * @return if the two DateTimeBlocks overlap based on time only
+	 */
+	protected boolean timeOverlapsWith(DateTimeBlock other) {
+		return  (this.getStartTime().isEqual(other.getStartTime())) ||
+				(this.getEndTime().isEqual(other.getEndTime())) ||
+				(this.getStartTime().isAfter(other.getStartTime()) && this.getStartTime().isBefore(other.getEndTime())) ||
+				(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()));
+	}
+	
+	/**
+	 * Check if the date ranges for the two time blocks overlap.
+	 * This method ignores the times and day of the week.
+	 * This method DOES consider two time blocks that overlap
+	 * only on the start/end date to be "overlapping" - aka
+	 * if the partial term dates align such that the start date of
+	 * segment of the term is the end date of a different segment of
+	 * the term.
+	 *
+	 * @param other the DateTimeBlock to check for overlap
+	 * @return if the two DateTimeBlocks overlap based on date only
+	 */
+	protected boolean dateOverlapsWith(DateTimeBlock other) {
+		return  (this.getStartDate().isEqual(other.getStartDate())) ||
+				(this.getEndDate().isEqual(other.getEndDate())) ||
+				(this.getStartDate().isEqual(other.getEndDate())) ||
+				(this.getEndDate().isEqual(other.getStartDate())) ||
+				(this.getStartDate().isAfter(other.getStartDate()) && this.getStartDate().isBefore(other.getEndDate())) ||
+				(other.getStartDate().isAfter(this.getStartDate()) && other.getStartDate().isBefore(this.getEndDate()));
 	}
 	
 	/* (non-Javadoc)
@@ -254,12 +293,18 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	 */
 	@Override
 	public int compareTo(DateTimeBlock other) {
-		int value = this.getDayOfWeek().compareTo(other.getDayOfWeek());		//TODO add date range comparison
+		int value = this.getStartDate().compareTo(other.getStartDate()); 
 		
 		if(value == 0) {
-			value = this.getStartTime().compareTo(other.getStartTime());
+			value = this.getDayOfWeek().compareTo(other.getDayOfWeek());
 			if(value == 0) {
-				value = this.getEndTime().compareTo(other.getEndTime());
+				value = this.getStartTime().compareTo(other.getStartTime());
+				if(value == 0) {
+					value = this.getEndTime().compareTo(other.getEndTime());
+					if(value == 0) {
+						value = this.getEndDate().compareTo(other.getEndDate());
+					}
+				}
 			}
 		}
 		return value;
@@ -269,9 +314,11 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object other) {										//TODO add date range comparison
+	public boolean equals(Object other) {										
 		if(other instanceof DateTimeBlock) {
 			DateTimeBlock comp = (DateTimeBlock)other;
+			if(!this.getStartDate().equals(comp.getStartDate())) return false;
+			if(!this.getEndDate().equals(comp.getEndDate())) return false;
 			if(!this.getDayOfWeek().equals(comp.getDayOfWeek())) return false;
 			if(!this.getStartTime().equals(comp.getStartTime())) return false;
 			if(!this.getEndTime().equals(comp.getEndTime())) return false;

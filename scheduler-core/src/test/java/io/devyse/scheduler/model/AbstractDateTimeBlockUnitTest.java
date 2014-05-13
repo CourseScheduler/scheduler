@@ -24,6 +24,7 @@
 package io.devyse.scheduler.model;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
@@ -45,10 +46,13 @@ import org.testng.asserts.SoftAssert;
 public class AbstractDateTimeBlockUnitTest {
 	
 	private static final long TEST_DURATION = 60;
+	private static final long TEST_PERIOD = 1;
 	
 	private static final DayOfWeek TEST_DAY = DayOfWeek.THURSDAY;
-	private static final LocalTime TEST_START = LocalTime.NOON;
-	private static final LocalTime TEST_END = LocalTime.NOON.plusMinutes((long)(1.5*TEST_DURATION));
+	private static final LocalTime TEST_START_TIME = LocalTime.NOON;
+	private static final LocalTime TEST_END_TIME = LocalTime.NOON.plusMinutes((long)(1.5*TEST_DURATION));
+	private static final LocalDate TEST_START_DATE = LocalDate.of(2014, 04, 30);
+	private static final LocalDate TEST_END_DATE = TEST_START_DATE.plusDays(1);
 	private static final ZoneOffset TEST_ZONE_1 = ZoneOffset.of("+06:00");	//Base time zone for the tests - eg. America/Chicago
 	private static final ZoneOffset TEST_ZONE_2 = ZoneOffset.of("+05:00");	//Must be "earlier" than zone 1 - eg. America/Detroit
 	private static final ZoneOffset TEST_ZONE_3 = ZoneOffset.of("+07:00");	//Must be "later" than zone 1 - eg. America/Denver
@@ -77,8 +81,14 @@ public class AbstractDateTimeBlockUnitTest {
 	 * 
 	 * 		e1 has same field data as a but with an earlier time zone
 	 * 		e2 has same field data as a but with a later time zone
+	 * 
+	 * 		f1 has same field data as a but with an earlier start date
+	 * 		f2 has same field data as a but with a later start date
+	 * 
+	 * 		g1 has same field data as a but with an earlier end date
+	 * 		g2 has same field data as a but with a later end date
 	 */
-	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2;
+	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2;
 	
 	/**
 	 * Prepare the test instances for use in the tests.
@@ -90,23 +100,29 @@ public class AbstractDateTimeBlockUnitTest {
 	 */
 	@BeforeClass
 	public void setUp() {
-		a1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
+		a1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		a2 = a1;
-		a3 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
-		a4 = new DateTimeBlockStub(TEST_DAY, TEST_START.minusSeconds(ZONE_1_2_OFFSET), TEST_END.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2);
-		a5 = new DateTimeBlockStub(TEST_DAY, TEST_START.plusSeconds(ZONE_1_3_OFFSET), TEST_END.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3);
+		a3 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		a4 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusSeconds(ZONE_1_2_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
+		a5 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
 		
-		b1 = new DateTimeBlockStub(TEST_DAY.minus(1), TEST_START, TEST_END, TEST_ZONE_1);
-		b2 = new DateTimeBlockStub(TEST_DAY.plus(1), TEST_START, TEST_END, TEST_ZONE_1);
+		b1 = new DateTimeBlockStub(TEST_DAY.minus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		b2 = new DateTimeBlockStub(TEST_DAY.plus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		c1 = new DateTimeBlockStub(TEST_DAY, TEST_START.minusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
-		c2 = new DateTimeBlockStub(TEST_DAY, TEST_START.plusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
+		c1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		c2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.plusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		d1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END.minusMinutes(TEST_DURATION), TEST_ZONE_1);
-		d2 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END.plusMinutes(TEST_DURATION), TEST_ZONE_1);
+		d1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME.minusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		d2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME.plusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		e1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_2);
-		e2 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_3);
+		e1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
+		e2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
+		
+		f1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(1), TEST_END_DATE);
+		f2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.plusDays(1), TEST_END_DATE);
+		
+		g1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.minusDays(TEST_PERIOD));
+		g2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.plusDays(TEST_PERIOD));
 	}
 		
 	/**
@@ -130,6 +146,8 @@ public class AbstractDateTimeBlockUnitTest {
 		eqAssert.assertNotEquals(a1, c1, "Instances with varying start times should not be equal");
 		eqAssert.assertNotEquals(a1, d1, "Instances with varying end times should not be equal");
 		eqAssert.assertNotEquals(a1, e1, "Instances with varying time zones should not be equal");
+		eqAssert.assertNotEquals(a1, f1, "Instances with varying start dates should not be equal");
+		eqAssert.assertNotEquals(a1, g1, "Instances with varying end dates should not be equal");
 						
 		eqAssert.assertAll();
 	}
@@ -162,7 +180,11 @@ public class AbstractDateTimeBlockUnitTest {
 				a1Code == d1.hashCode() &&
 				a1Code == d2.hashCode() &&
 				a1Code == e1.hashCode() &&
-				a1Code == e2.hashCode()
+				a1Code == e2.hashCode() &&
+				a1Code == f1.hashCode() &&
+				a1Code == f2.hashCode() &&
+				a1Code == g1.hashCode() &&
+				a1Code == g2.hashCode()
 		;
 		hcAssert.assertFalse(variety, "Hashcode should return a variety of values for instance with varying uniqueness fields");
 		
@@ -178,11 +200,12 @@ public class AbstractDateTimeBlockUnitTest {
 	 * 
 	 * Note:
 	 * 	Order for AbstractDateTimeBlock implies the following:
+	 * 		Start date is the first ordering element
 	 * 		Sunday < Monday < Tuesday < Wednesday < Thursday < Friday < Saturday
 	 * 		Start and end time are compared first as UTC then with local time to preserve consistency with equals
 	 * 		Start time takes priority over end time
 	 * 		End time only matters when start time is the same
-	 *
+	 *		End date is the last ordering component
 	 */
 	@Test
 	public void confirmCompareTo() {
@@ -195,28 +218,36 @@ public class AbstractDateTimeBlockUnitTest {
 		
 		ctAssert.assertNotEquals(a1.compareTo(b1), 0, "CompareTo should be consistent with equals() for non-equal instance");
 		ctAssert.assertNotEquals(b1.compareTo(a1), 0, "CompareTo should be consistent with equals() for non-equal instance, regardless of comparison direction");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(-b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(-b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(-c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(-c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(-d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end))");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(-d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(-b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day of week)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(-b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day of week)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(-c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start time)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(-c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start time)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(-d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end time))");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(-d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end time)");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), Math.signum(-e1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser zone)");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), Math.signum(-e2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater zone)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(f1)), Math.signum(-f1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start date)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(f2)), Math.signum(-f2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start date)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(g1)), Math.signum(-g1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end date)");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(g2)), Math.signum(-g2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end date)");
 				
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), 1.0f, "Positive result expected for instance with lesser day");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), 1.0f, "Positive result expected for instance with lesser start");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), 1.0f, "Positive result expected for instance with lesser end");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), 1.0f, "Positive result expected for instance with lesser day of week");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), 1.0f, "Positive result expected for instance with lesser start time");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), 1.0f, "Positive result expected for instance with lesser end time");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), -1.0f, "Negative result expected for instance with lesser zone");	//timezones are sorted descending
+		ctAssert.assertEquals(Math.signum(a1.compareTo(f1)), 1.0f, "Positive result expected for instance with lesser start date");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(g1)), 1.0f, "Positive result expected for instance with lesser end date");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(a4)), 1.0f, "Positive result expected for instance with same UTC but lesser zone");
 
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), -1.0f, "Negative result expected for instance with greater day");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), -1.0f, "Negative result expected for instance with greater start");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), -1.0f, "Negative result expected for instance with greater end");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), -1.0f, "Negative result expected for instance with greater day of week");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), -1.0f, "Negative result expected for instance with greater start time");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), -1.0f, "Negative result expected for instance with greater end time");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), 1.0f, "Positive result expected for instance with greater zone");	//timezones are sorted descending
+		ctAssert.assertEquals(Math.signum(a1.compareTo(f2)), -1.0f, "Negative result expected for instance with greater start date");
+		ctAssert.assertEquals(Math.signum(a1.compareTo(g2)), -1.0f, "Negative result expected for instance with greater end date");
 		ctAssert.assertEquals(Math.signum(a1.compareTo(a5)), -1.0f, "Negative result expected for instance with same UTC but greater zone");
 		
-		ctAssert.assertEquals(Math.signum(b1.compareTo(a1)), Math.signum(a1.compareTo(b2)), "Transitivity expected for instances differing on day");
+		ctAssert.assertEquals(Math.signum(b1.compareTo(a1)), Math.signum(a1.compareTo(b2)), "Transitivity expected for instances differing on day of week");
 		ctAssert.assertEquals(Math.signum(c1.compareTo(a1)), Math.signum(a1.compareTo(c2)), "Transitivity expected for instances differing on start");
 		ctAssert.assertEquals(Math.signum(d1.compareTo(a1)), Math.signum(a1.compareTo(d2)), "Transitivity expected for instances differing on end");
 		ctAssert.assertEquals(Math.signum(e1.compareTo(a1)), Math.signum(a1.compareTo(e2)), "Transitivity expected for instances differing on zone");
@@ -225,12 +256,21 @@ public class AbstractDateTimeBlockUnitTest {
 	}
 	
 	/**
-	 * Confirm that the duration between start and end of the period is calculated properly
+	 * Confirm that the duration between start and end times is calculated properly
 	 *
 	 */
 	@Test
 	public void confirmDuration() {
-		Assert.assertEquals(a1.getDuration().toMinutes(), (long)(1.5*TEST_DURATION), "Duration between start and end did not match expected number of minutes");
+		Assert.assertEquals(a1.getDuration().toMinutes(), (long)(1.5*TEST_DURATION), "Duration between start and end times did not match expected number of minutes");
+	}
+	
+	/**
+	 * Confirm that the duration between stand and end dates is calculated properly
+	 *
+	 */
+	@Test
+	public void confirmPeriod() {
+		Assert.assertEquals(a1.getPeriod().getDays(), TEST_PERIOD, "Period between start and end dates did not match expected number of days");
 	}
 	
 	/**
@@ -244,6 +284,8 @@ public class AbstractDateTimeBlockUnitTest {
 	public void confirmOverlap() {
 		SoftAssert olAssert = new SoftAssert();
 		
+		olAssert.assertEquals(a1.overlapsWith(a2), true, "Periods with same fields should overlap");
+		
 		olAssert.assertEquals(a1.overlapsWith(b1), false, "Periods on different days should not overlap");
 		olAssert.assertEquals(b1.overlapsWith(a1), false, "Periods on different days should not overlap");
 		olAssert.assertEquals(a1.overlapsWith(b2), false, "Periods on different days should not overlap");
@@ -252,8 +294,11 @@ public class AbstractDateTimeBlockUnitTest {
 		olAssert.assertEquals(a1.overlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
 		olAssert.assertEquals(a1.overlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
 		
-		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start or end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
-		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start or end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		
+		//TODO check same end/start time does not overlap
+		//TODO check start and end date overlaps
 		
 		olAssert.assertAll();
 	}
@@ -271,23 +316,27 @@ public class AbstractDateTimeBlockUnitTest {
 		 * Create a new DateTimeBlockStub using local times and a specific time zone
 		 * 
 		 * @param dow the day of the week
-		 * @param start the local start time
-		 * @param end the local end time
+		 * @param startTime the local start time
+		 * @param endTime the local end time
 		 * @param zone the time zone reference for the local times
+		 * @param startDate the start date
+		 * @param endDate the end date
 		 */
-		protected DateTimeBlockStub(DayOfWeek dow, LocalTime start, LocalTime end,	ZoneOffset zone) {
-			super(dow, start, end, zone);
+		protected DateTimeBlockStub(DayOfWeek dow, LocalTime startTime, LocalTime endTime,	ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
+			super(dow, startTime, endTime, zone, startDate, endDate);
 		}
 		
 		/**
 		 * Create a new DateTimeBlockStub using the zoned times
 		 *
 		 * @param dow the day of the week
-		 * @param start the zoned start time
-		 * @param end the zoned end time
+		 * @param startTime the zoned start time
+		 * @param endTime the zoned end time
+		 * @param startDate the start date
+		 * @param endDate the end date
 		 */
-		protected DateTimeBlockStub(DayOfWeek dow, OffsetTime start, OffsetTime end) {
-			super(dow, start, end);
+		protected DateTimeBlockStub(DayOfWeek dow, OffsetTime startTime, OffsetTime endTime, LocalDate startDate, LocalDate endDate) {
+			super(dow, startTime, endTime, startDate, endDate);
 		}
 	}
 }

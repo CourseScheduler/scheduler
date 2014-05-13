@@ -119,8 +119,8 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 	
 	/**
 	 * Check if two periods overlap. This uses the offset (zoned) start and
-	 * end times of the DateTimeBlock as well as the day of week to determine if the
-	 * DateTimeBlocks overlap at all.
+	 * end times of the DateTimeBlock as well as the day of week and start and
+	 * end dates to determine if the DateTimeBlocks overlap at all.
 	 *
 	 * @param other the other DateTimeBlock to check for overlap with this DateTimeBlock
 	 * 
