@@ -1,5 +1,5 @@
 /**
- * @(#) AbstractPeriodUnitTest.java
+ * @(#) AbstractDateTimeBlockUnitTest.java
  *
  * This file is part of the Course Scheduler, an open source, cross platform
  * course scheduling tool, configurable for most universities.
@@ -35,14 +35,14 @@ import org.testng.asserts.SoftAssert;
 
 
 /**
- * Unit tests for the AbstractPeriod base class to confirm the default
+ * Unit tests for the AbstractDateTimeBlock base class to confirm the default
  * functionality has appropriate semantics.
  *
  * @author Mike Reinhold
  *
  */
 @Test(groups = {"unit","abstract"})
-public class AbstractPeriodUnitTest {
+public class AbstractDateTimeBlockUnitTest {
 	
 	private static final long TEST_DURATION = 60;
 	
@@ -55,7 +55,9 @@ public class AbstractPeriodUnitTest {
 	
 	private static final int ZONE_1_2_OFFSET = TEST_ZONE_1.getTotalSeconds()-TEST_ZONE_2.getTotalSeconds();
 	private static final int ZONE_1_3_OFFSET = TEST_ZONE_3.getTotalSeconds()-TEST_ZONE_1.getTotalSeconds();
-		
+	
+	//TODO update all of the test cases to include the date range information
+	
 	/**
 	 * Semantics of the periods are as follows:
 	 * 
@@ -76,35 +78,35 @@ public class AbstractPeriodUnitTest {
 	 * 		e1 has same field data as a but with an earlier time zone
 	 * 		e2 has same field data as a but with a later time zone
 	 */
-	private PeriodStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2;
+	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2;
 	
 	/**
 	 * Prepare the test instances for use in the tests.
 	 * 
-	 * **IMPORTANT - currently, Period is defined to be immutable
+	 * **IMPORTANT - currently, DateTimeBlock is defined to be immutable
 	 * 					as a result, instances are safe to reuse
 	 * 					without reinitializing them 
 	 * 
 	 */
 	@BeforeClass
 	public void setUp() {
-		a1 = new PeriodStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
+		a1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
 		a2 = a1;
-		a3 = new PeriodStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
-		a4 = new PeriodStub(TEST_DAY, TEST_START.minusSeconds(ZONE_1_2_OFFSET), TEST_END.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2);
-		a5 = new PeriodStub(TEST_DAY, TEST_START.plusSeconds(ZONE_1_3_OFFSET), TEST_END.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3);
+		a3 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_1);
+		a4 = new DateTimeBlockStub(TEST_DAY, TEST_START.minusSeconds(ZONE_1_2_OFFSET), TEST_END.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2);
+		a5 = new DateTimeBlockStub(TEST_DAY, TEST_START.plusSeconds(ZONE_1_3_OFFSET), TEST_END.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3);
 		
-		b1 = new PeriodStub(TEST_DAY.minus(1), TEST_START, TEST_END, TEST_ZONE_1);
-		b2 = new PeriodStub(TEST_DAY.plus(1), TEST_START, TEST_END, TEST_ZONE_1);
+		b1 = new DateTimeBlockStub(TEST_DAY.minus(1), TEST_START, TEST_END, TEST_ZONE_1);
+		b2 = new DateTimeBlockStub(TEST_DAY.plus(1), TEST_START, TEST_END, TEST_ZONE_1);
 		
-		c1 = new PeriodStub(TEST_DAY, TEST_START.minusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
-		c2 = new PeriodStub(TEST_DAY, TEST_START.plusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
+		c1 = new DateTimeBlockStub(TEST_DAY, TEST_START.minusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
+		c2 = new DateTimeBlockStub(TEST_DAY, TEST_START.plusMinutes(TEST_DURATION), TEST_END, TEST_ZONE_1);
 		
-		d1 = new PeriodStub(TEST_DAY, TEST_START, TEST_END.minusMinutes(TEST_DURATION), TEST_ZONE_1);
-		d2 = new PeriodStub(TEST_DAY, TEST_START, TEST_END.plusMinutes(TEST_DURATION), TEST_ZONE_1);
+		d1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END.minusMinutes(TEST_DURATION), TEST_ZONE_1);
+		d2 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END.plusMinutes(TEST_DURATION), TEST_ZONE_1);
 		
-		e1 = new PeriodStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_2);
-		e2 = new PeriodStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_3);
+		e1 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_2);
+		e2 = new DateTimeBlockStub(TEST_DAY, TEST_START, TEST_END, TEST_ZONE_3);
 	}
 		
 	/**
@@ -175,7 +177,7 @@ public class AbstractPeriodUnitTest {
 	 * zones yield compareTo == 0 but equals == false.
 	 * 
 	 * Note:
-	 * 	Order for AbstractPeriod implies the following:
+	 * 	Order for AbstractDateTimeBlock implies the following:
 	 * 		Sunday < Monday < Tuesday < Wednesday < Thursday < Friday < Saturday
 	 * 		Start and end time are compared first as UTC then with local time to preserve consistency with equals
 	 * 		Start time takes priority over end time
@@ -232,7 +234,7 @@ public class AbstractPeriodUnitTest {
 	}
 	
 	/**
-	 * Confirm that Period overlaps are properly detected.
+	 * Confirm that DateTimeBlock overlaps are properly detected.
 	 * 
 	 * Periods overlap if they occur on the same day and there is at least
 	 * one minute that is present in both Periods (timeline - local time + timezone) 
@@ -247,44 +249,44 @@ public class AbstractPeriodUnitTest {
 		olAssert.assertEquals(a1.overlapsWith(b2), false, "Periods on different days should not overlap");
 		olAssert.assertEquals(b2.overlapsWith(a1), false, "Periods on different days should not overlap");
 		
-		olAssert.assertEquals(a1.overlapsWith(c1), true, "This Period with start time between other Period start and end times should overlap");
-		olAssert.assertEquals(a1.overlapsWith(c2), true, "Other Period with start time between this Period start and end times should overlap");
+		olAssert.assertEquals(a1.overlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
+		olAssert.assertEquals(a1.overlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
 		
-		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start or end time of other Period between this Period start and end times should not overlap");
-		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start or end time of other Period between this Period start and end times should not overlap");
+		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start or end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start or end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
 		
 		olAssert.assertAll();
 	}
 	
 	/**
-	 * Stub implementation of Period via AbstractPeriod to unit test the base functionality
-	 * of the AbstractPeriod class (constructors, equals, hashCode, compareTo, duration, etc)
+	 * Stub implementation of DateTimeBlock via AbstractDateTimeBlock to unit test the base functionality
+	 * of the AbstractDateTimeBlock class (constructors, equals, hashCode, compareTo, duration, etc)
 	 *
 	 * @author Mike Reinhold
 	 *
 	 */
-	public static class PeriodStub extends AbstractPeriod{
+	public static class DateTimeBlockStub extends AbstractDateTimeBlock{
 
 		/**
-		 * Create a new PeriodStub using local times and a specific time zone
+		 * Create a new DateTimeBlockStub using local times and a specific time zone
 		 * 
 		 * @param dow the day of the week
 		 * @param start the local start time
 		 * @param end the local end time
 		 * @param zone the time zone reference for the local times
 		 */
-		protected PeriodStub(DayOfWeek dow, LocalTime start, LocalTime end,	ZoneOffset zone) {
+		protected DateTimeBlockStub(DayOfWeek dow, LocalTime start, LocalTime end,	ZoneOffset zone) {
 			super(dow, start, end, zone);
 		}
 		
 		/**
-		 * Create a new PeriodStub using the zoned times
+		 * Create a new DateTimeBlockStub using the zoned times
 		 *
 		 * @param dow the day of the week
 		 * @param start the zoned start time
 		 * @param end the zoned end time
 		 */
-		protected PeriodStub(DayOfWeek dow, OffsetTime start, OffsetTime end) {
+		protected DateTimeBlockStub(DayOfWeek dow, OffsetTime start, OffsetTime end) {
 			super(dow, start, end);
 		}
 	}
