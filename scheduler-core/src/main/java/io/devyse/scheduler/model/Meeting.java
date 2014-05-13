@@ -23,9 +23,11 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Set;
+
 /**
  * Represent a specific instance of when a Section meets. Contains
- * a Period as well as the location information (campus, building,
+ * a DateTimeBlock as well as the location information (campus, building,
  * room), the instructor, and the type of meeting (lab vs lecture vs other).
  * 
  *
@@ -35,12 +37,12 @@ package io.devyse.scheduler.model;
 public interface Meeting extends Comparable<Meeting> {
 	
 	/**
-	 * The time Period in which the Meeting occurs. This method
-	 * returns null if the Meeting time Period is not yet announced
+	 * The time DateTimeBlock in which the Meeting occurs. This method
+	 * returns null if the Meeting time DateTimeBlock is not yet announced
 	 *
-	 * @return the time Period for this meeting
+	 * @return the time DateTimeBlock for this meeting
 	 */
-	public Period getPeriod();
+	public DateTimeBlock getPeriod();
 	
 	/**
 	 * The name of the campus at which the Meeting occurs. This 
@@ -69,8 +71,32 @@ public interface Meeting extends Comparable<Meeting> {
 	 */
 	public String getRoom();
 	
-	//TODO getMeetingType
-	//TODO getInstructor
+	/**
+	 * A description of the type of meeting, whether a lecture, lab,
+	 * discussion, seminar, etc. This Meeting type is strictly for
+	 * informational purposes, not used in the scheduling algorithm
+	 * in anyway
+	 *
+	 * @return the type of Meeting
+	 */
+	public String getMeetingType();
+	
+	/**
+	 * A description of the type of schedule item for the Meeting. Schedule
+	 * type varies greatly between universities. This schedule type is for 
+	 * both informational and scheduling purposes.
+	 *
+	 * @return type of scheduling for the Meeting
+	 */
+	public String getScheduleType();
+	
+	
+	/**
+	 * A meeting may have one or more instructors
+	 *
+	 * @return the set of instructors for this meeting
+	 */
+	public Set<String> getInstructors();
 	
 	//TODO what about add/drop dates, date range, length (number of weeks)
 	
