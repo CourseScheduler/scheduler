@@ -31,6 +31,7 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.Objects;
 
 /**
  * Represent a specific time block for a course meeting. Contains
@@ -126,7 +127,32 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 	 * 
 	 * @return if the other DateTimeBlock overlaps with this DateTimeBlock
 	 */
-	public boolean overlapsWith(DateTimeBlock other);
+	public default boolean overlapsWith(DateTimeBlock other) {
+		return 	this.dayOfWeekOverlapsWith(other) && 
+				this.timeOverlapsWith(other) && 
+				this.dateOverlapsWith(other);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public default int compareTo(DateTimeBlock other) {
+		int value = this.getStartDate().compareTo(other.getStartDate()); 
+		
+		if(value == 0) {
+			value = this.getDayOfWeek().compareTo(other.getDayOfWeek());
+			if(value == 0) {
+				value = this.getStartTime().compareTo(other.getStartTime());
+				if(value == 0) {
+					value = this.getEndTime().compareTo(other.getEndTime());
+					if(value == 0) {
+						value = this.getEndDate().compareTo(other.getEndDate());
+					}
+				}
+			}
+		}
+		return value;
+	}
 	
 	/**
 	 * Gets the textual representation of the DateTimeBlock using the specified
@@ -140,4 +166,79 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 	 * @return
 	 */
 	public String toString(TextStyle style, DateTimeFormatter formatter);
+	
+	/**
+	 * Check if the time ranges for the two time blocks overlap.
+	 * This method ignores the date range and day of the week.
+	 * This method DOES NOT consider two time blocks that overlap
+	 * only on the start/end minute to be "overlapping" - aka
+	 * some universities publish course times as 8-10AM, 10-11AM - 
+	 * this is not considered overlapping (scheduling algorithm
+	 * options can be used to ensure a minimum passing period)
+	 *
+	 * @param other the DateTimeBlock for the overlap check
+	 * @return if the two DateTimeBlocks overlap based on time only
+	 */
+	public default boolean timeOverlapsWith(DateTimeBlock other) {
+		return  (this.getStartTime().isEqual(other.getStartTime())) ||
+				(this.getEndTime().isEqual(other.getEndTime())) ||
+				(this.getStartTime().isAfter(other.getStartTime()) && this.getStartTime().isBefore(other.getEndTime())) ||
+				(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()));
+	}
+	
+	/**
+	 * Check if the date ranges for the two time blocks overlap.
+	 * This method ignores the times and day of the week.
+	 * This method DOES consider two time blocks that overlap
+	 * only on the start/end date to be "overlapping" - aka
+	 * if the partial term dates align such that the start date of
+	 * segment of the term is the end date of a different segment of
+	 * the term.
+	 *
+	 * @param other the DateTimeBlock for the overlap check
+	 * @return if the two DateTimeBlocks overlap based on date only
+	 */
+	public default boolean dateOverlapsWith(DateTimeBlock other) {
+		return  (this.getStartDate().isEqual(other.getStartDate())) ||
+				(this.getEndDate().isEqual(other.getEndDate())) ||
+				(this.getStartDate().isEqual(other.getEndDate())) ||
+				(this.getEndDate().isEqual(other.getStartDate())) ||
+				(this.getStartDate().isAfter(other.getStartDate()) && this.getStartDate().isBefore(other.getEndDate())) ||
+				(other.getStartDate().isAfter(this.getStartDate()) && other.getStartDate().isBefore(this.getEndDate()));
+	}
+	
+	/**
+	 * Check if the day of week for the two time blocks overlap
+	 *
+	 * @param other the DateTimeBlock for the overlap check
+	 * @return if the two DateTimeBlocks overlap based on day of week only
+	 */
+	public default boolean dayOfWeekOverlapsWith(DateTimeBlock other) {
+		return this.getDayOfWeek().equals(other.getDayOfWeek());
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public default boolean equals(DateTimeBlock other) {
+		if(!this.getStartDate().equals(other.getStartDate())) return false;
+		if(!this.getEndDate().equals(other.getEndDate())) return false;
+		if(!this.getDayOfWeek().equals(other.getDayOfWeek())) return false;
+		if(!this.getStartTime().equals(other.getStartTime())) return false;
+		if(!this.getEndTime().equals(other.getEndTime())) return false;
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	public default int getHashCode() {
+		return Objects.hash(
+			this.getDayOfWeek(),
+			this.getStartTime(),
+			this.getEndTime(),
+			this.getStartDate(),
+			this.getEndDate()
+		);
+	}
 }
