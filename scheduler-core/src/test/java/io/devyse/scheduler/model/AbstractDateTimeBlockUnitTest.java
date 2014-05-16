@@ -46,11 +46,12 @@ import org.testng.asserts.SoftAssert;
 public class AbstractDateTimeBlockUnitTest {
 	
 	private static final long TEST_DURATION = 60;
+	private static final long TEST_LENGTH = (long)(1.5*TEST_DURATION);
 	private static final long TEST_PERIOD = 1;
 	
 	private static final DayOfWeek TEST_DAY = DayOfWeek.THURSDAY;
 	private static final LocalTime TEST_START_TIME = LocalTime.NOON;
-	private static final LocalTime TEST_END_TIME = LocalTime.NOON.plusMinutes((long)(1.5*TEST_DURATION));
+	private static final LocalTime TEST_END_TIME = LocalTime.NOON.plusMinutes(TEST_LENGTH);
 	private static final LocalDate TEST_START_DATE = LocalDate.of(2014, 04, 30);
 	private static final LocalDate TEST_END_DATE = TEST_START_DATE.plusDays(1);
 	private static final ZoneOffset TEST_ZONE_1 = ZoneOffset.of("+06:00");	//Base time zone for the tests - eg. America/Chicago
@@ -60,10 +61,8 @@ public class AbstractDateTimeBlockUnitTest {
 	private static final int ZONE_1_2_OFFSET = TEST_ZONE_1.getTotalSeconds()-TEST_ZONE_2.getTotalSeconds();
 	private static final int ZONE_1_3_OFFSET = TEST_ZONE_3.getTotalSeconds()-TEST_ZONE_1.getTotalSeconds();
 	
-	//TODO update all of the test cases to include the date range information
-	
 	/**
-	 * Semantics of the periods are as follows:
+	 * Semantics of the DateTimeBlocks are as follows:
 	 * 
 	 * 		a1 & a2 are both references to the same instance
 	 *  	a1 & a3 have the same field data, but are separate instances
@@ -87,8 +86,14 @@ public class AbstractDateTimeBlockUnitTest {
 	 * 
 	 * 		g1 has same field data as a but with an earlier end date
 	 * 		g2 has same field data as a but with a later end date
+	 * 
+	 * 		h1 has same field data as a but occurring immediately before (end time aligned to a's start time)
+	 * 
+	 * 		i1 has same field data as a but occurring in a date range prior to a
+	 * 		i2 has same field data as a but occurring in a date range ending on the start of a
+	 * 		i3 has same field data as a but occurring in a date range that contains a
 	 */
-	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2;
+	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2, h1, i1, i2, i3;
 	
 	/**
 	 * Prepare the test instances for use in the tests.
@@ -123,6 +128,12 @@ public class AbstractDateTimeBlockUnitTest {
 		
 		g1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.minusDays(TEST_PERIOD));
 		g2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.plusDays(TEST_PERIOD));
+		
+		h1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_LENGTH), TEST_END_TIME.minusMinutes(TEST_LENGTH), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		
+		i1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(2*TEST_PERIOD), TEST_START_DATE.minusDays(TEST_PERIOD));
+		i2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_START_DATE);
+		i3 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_END_DATE.plusDays(TEST_PERIOD));
 	}
 		
 	/**
@@ -274,32 +285,130 @@ public class AbstractDateTimeBlockUnitTest {
 	}
 	
 	/**
+	 * Confirm that day of the week overlap checks function properly
+	 * 
+	 * Days of the week "overlap" if both DateTimeBlocks have the same
+	 * day of the week
+	 *
+	 */
+	@Test
+	public void confirmDayOfWeekOverlap() {
+		SoftAssert olAssert = new SoftAssert();
+		
+		//day of week matches should overlap
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a2), true, "DateTimeBlocks with same day of week should overlap");
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a3), true, "DateTimeBlocks with same day of week should overlap");
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a4), true, "DateTimeBlocks with same day of week should overlap");
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a5), true, "DateTimeBlocks with same day of week should overlap");
+
+		//day of week differing should not overlap
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(b1), false, "DateTimeBlocks on different days should not overlap");
+		olAssert.assertEquals(b1.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
+		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(b2), false, "DateTimeBlocks on different days should not overlap");
+		olAssert.assertEquals(b2.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
+
+		olAssert.assertAll();
+	}
+	
+	/**
+	 * Confirm that date range overlap checks function properly
+	 * 
+	 * Date ranges "overlap" if any date is shared between the two
+	 * date ranges.
+	 *
+	 */
+	@Test
+	public void confirmDateRangeOverlap() {
+		SoftAssert olAssert = new SoftAssert();
+		
+		//same date range should overlap
+		olAssert.assertEquals(a1.dateOverlapsWith(a2), true, "DateTimeBlocks with same date range should overlap");
+		olAssert.assertEquals(a1.dateOverlapsWith(a3), true, "DateTimeBlocks with same date range should overlap");
+		olAssert.assertEquals(a1.dateOverlapsWith(a4), true, "DateTimeBlocks with same date range should overlap");
+		olAssert.assertEquals(a1.dateOverlapsWith(a5), true, "DateTimeBlocks with same date range should overlap");
+
+		//check different (non-sharing) ranges don't overlap
+		olAssert.assertEquals(a1.dateOverlapsWith(i1), false, "DateTimeBlocks with non-sharing date range should not overlap");
+		olAssert.assertEquals(i1.dateOverlapsWith(a1), false, "DateTimeBlocks with non-sharing date range should not overlap");
+		
+		//check start/end date aligning ranges (where the start of one is the end of another) overlap
+		olAssert.assertEquals(a1.dateOverlapsWith(i2), true, "DateTimeBlocks with aligned start & end dates should overlap");
+		olAssert.assertEquals(i2.dateOverlapsWith(a1), true, "DateTimeBlocks with aligned start & end dates should overlap");
+		
+		//check offset ranges that share dates overlap
+		olAssert.assertEquals(a1.dateOverlapsWith(i3), true, "DateTimeBlocks with shared date range should overlap");
+		olAssert.assertEquals(i3.dateOverlapsWith(a1), true, "DateTimeBlocks with shared date range should overlap");
+		
+		olAssert.assertAll();
+	}
+	
+	/**
+	 * Confirm that time block overlap checks function properly
+	 * 
+	 * Time blocks "overlap" if two DateTimeBlocks share a start or end time or
+	 * if the start time for one of the two DateTimeBlocks is in between the
+	 * start and end time of the other period.
+	 * 
+	 * The start time of one period is allowed to be the same as the end
+	 * time of another period without being considered as "overlapping"
+	 * (this represents a "zero-passing period" - a potentially valid 
+	 * scenario for some universities)
+	 */
+	@Test
+	public void confirmTimeBlockOverlap() {
+		SoftAssert olAssert = new SoftAssert();
+
+		//time blocks with shared start or end should overlap
+		olAssert.assertEquals(a1.timeOverlapsWith(a2), true, "DateTimeBlocks with same time block should overlap");
+		olAssert.assertEquals(a1.timeOverlapsWith(a3), true, "DateTimeBlocks with same time block should overlap");
+		olAssert.assertEquals(a1.timeOverlapsWith(a4), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
+		olAssert.assertEquals(a1.timeOverlapsWith(a5), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
+
+		//shared start should overlap (shared end is same as next set - start is inclusive)
+		olAssert.assertEquals(a1.timeOverlapsWith(d1), true, "DateTimeBlocks that share only a start time overlap");
+		olAssert.assertEquals(a1.timeOverlapsWith(d2), true, "DateTimeBlocks that share only a start time overlap");
+		
+		//time block is inclusive of other time block's start or other time block is inclusive of first block's start should overlap
+		olAssert.assertEquals(a1.timeOverlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
+		olAssert.assertEquals(a1.timeOverlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
+		
+		//neither start time is inclusive of the other block (and not the same as other start time) should not overlap
+		olAssert.assertEquals(d1.timeOverlapsWith(c2), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		olAssert.assertEquals(c2.timeOverlapsWith(d1), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+
+		//start time of one matches end time of another should not overlap - zero passing periods are allowed
+		olAssert.assertEquals(a1.timeOverlapsWith(h1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
+		olAssert.assertEquals(h1.timeOverlapsWith(a1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
+		
+		olAssert.assertAll();
+	}
+	
+	/**
 	 * Confirm that DateTimeBlock overlaps are properly detected.
 	 * 
-	 * Periods overlap if they occur on the same day and there is at least
-	 * one minute that is present in both Periods (timeline - local time + timezone) 
+	 * DateTimeBlocks overlap if they occur on the same day and there is at least
+	 * one minute that is present in both DateTimeBlocks (timeline - local time + timezone) 
 	 *
 	 */
 	@Test
 	public void confirmOverlap() {
 		SoftAssert olAssert = new SoftAssert();
 		
-		olAssert.assertEquals(a1.overlapsWith(a2), true, "Periods with same fields should overlap");
+		//all fiends match should overlap
+		olAssert.assertEquals(a1.overlapsWith(a2), true, "DateTimeBlocks with same fields should overlap");
+		olAssert.assertEquals(a1.overlapsWith(a3), true, "DateTimeBlocks with same fields should overlap");
+		olAssert.assertEquals(a1.overlapsWith(a4), true, "DateTimeBlocks with semantically equivalent fields should overlap");
+		olAssert.assertEquals(a1.overlapsWith(a5), true, "DateTimeBlocks with semantically equivalent fields should overlap");
 		
-		olAssert.assertEquals(a1.overlapsWith(b1), false, "Periods on different days should not overlap");
-		olAssert.assertEquals(b1.overlapsWith(a1), false, "Periods on different days should not overlap");
-		olAssert.assertEquals(a1.overlapsWith(b2), false, "Periods on different days should not overlap");
-		olAssert.assertEquals(b2.overlapsWith(a1), false, "Periods on different days should not overlap");
+		//check different day of week makes DateTimeBlock not overlap
+		olAssert.assertEquals(a1.overlapsWith(b1), false, "DateTimeBlocks with different day of week should not overlap");
 		
-		olAssert.assertEquals(a1.overlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
-		olAssert.assertEquals(a1.overlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
+		//check different date range makes DateTimeBlock not overlap
+		olAssert.assertEquals(a1.overlapsWith(i1), false, "DateTimeBlocks with different date range should not overlap");
 		
-		olAssert.assertEquals(d1.overlapsWith(c2), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
-		olAssert.assertEquals(c2.overlapsWith(d1), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
-		
-		//TODO check same end/start time does not overlap
-		//TODO check start and end date overlaps
-		
+		//check different time block makes DateTimeBlock not overlap
+		olAssert.assertEquals(a1.overlapsWith(h1), false, "DateTimeBlocks with different time block should not overlap");;
+						
 		olAssert.assertAll();
 	}
 	
