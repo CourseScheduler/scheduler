@@ -167,9 +167,17 @@
 	
 	<dependencies>
 	
+		<!-- Include TestNG for testing -->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Include Mockito for mocking -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
 		</dependency>
 		
@@ -207,6 +215,14 @@
 				<scope>test</scope>
 			</dependency>
 			
+			<!-- Mocking framework for unit testing -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.9.5</version>
+				<scope>test</scope>
+			</dependency>
+            
 			<!-- TODO Other dependencies-->
 		</dependencies>
 	</dependencyManagement>
