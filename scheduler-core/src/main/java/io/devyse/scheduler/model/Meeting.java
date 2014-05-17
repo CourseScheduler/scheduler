@@ -23,13 +23,13 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * Represent a specific instance of when a Section meets. Contains
  * a DateTimeBlock as well as the location information (campus, building,
  * room), the instructor, and the type of meeting (lab vs lecture vs other).
- * 
  *
  * @author Mike Reinhold
  *
@@ -42,7 +42,7 @@ public interface Meeting extends Comparable<Meeting> {
 	 *
 	 * @return the time DateTimeBlock for this meeting
 	 */
-	public DateTimeBlock getPeriod();
+	public DateTimeBlock getDateTimeBlock();
 	
 	/**
 	 * The name of the campus at which the Meeting occurs. This 
@@ -96,8 +96,46 @@ public interface Meeting extends Comparable<Meeting> {
 	 *
 	 * @return the set of instructors for this meeting
 	 */
-	public Set<String> getInstructors();
+	public Set<String> getInstructors();	//ANALYZE instructors using own object?
 	
-	//TODO what about add/drop dates, date range, length (number of weeks)
+	/**
+	 * Meetings are specific to a single Section of a course
+	 *
+	 * @return the Section containing this Meeting
+	 */
+	public Section getSection();
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public default boolean equals(Meeting other) {
+		return 	this.getSection().equals(other.getSection()) &&
+				this.getDateTimeBlock().equals(other.getDateTimeBlock())
+		;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	public default int getHashCode() {
+		return Objects.hash(
+			this.getSection(),
+			this.getDateTimeBlock()
+		);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public default int compareTo(Meeting other) {
+		int value = this.getSection().compareTo(other.getSection());
+		
+		if(value == 0) {
+			value = this.getDateTimeBlock().compareTo(other.getDateTimeBlock());
+		}
+		
+		return value;
+	}
 	
 }

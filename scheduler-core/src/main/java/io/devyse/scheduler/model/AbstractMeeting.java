@@ -32,19 +32,13 @@ package io.devyse.scheduler.model;
  */
 public abstract class AbstractMeeting implements Meeting {
 	
-	@Override
-	public int compareTo(Meeting other) {
-		//TODO compare instances
-		return 0;
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object other) {
-		//TODO implement equals
-		return false;
+		if (other instanceof Meeting) return this.equals((Meeting)other);
+		else return false;
 	}
 	
 	/* (non-Javadoc)
@@ -52,7 +46,6 @@ public abstract class AbstractMeeting implements Meeting {
 	 */
 	@Override
 	public int hashCode(){
-		//TODO calculate hashcode
-		return 0;
+		return this.getHashCode();
 	}
 }
