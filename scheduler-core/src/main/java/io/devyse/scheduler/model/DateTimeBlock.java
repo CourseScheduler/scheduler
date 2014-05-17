@@ -183,7 +183,8 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 		return  (this.getStartTime().isEqual(other.getStartTime())) ||
 				(this.getEndTime().isEqual(other.getEndTime())) ||
 				(this.getStartTime().isAfter(other.getStartTime()) && this.getStartTime().isBefore(other.getEndTime())) ||
-				(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()));
+				(other.getStartTime().isAfter(this.getStartTime()) && other.getStartTime().isBefore(this.getEndTime()))
+		;
 	}
 	
 	/**
@@ -204,7 +205,8 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 				(this.getStartDate().isEqual(other.getEndDate())) ||
 				(this.getEndDate().isEqual(other.getStartDate())) ||
 				(this.getStartDate().isAfter(other.getStartDate()) && this.getStartDate().isBefore(other.getEndDate())) ||
-				(other.getStartDate().isAfter(this.getStartDate()) && other.getStartDate().isBefore(this.getEndDate()));
+				(other.getStartDate().isAfter(this.getStartDate()) && other.getStartDate().isBefore(this.getEndDate()))
+		;
 	}
 	
 	/**
@@ -221,12 +223,12 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public default boolean equals(DateTimeBlock other) {
-		if(!this.getStartDate().equals(other.getStartDate())) return false;
-		if(!this.getEndDate().equals(other.getEndDate())) return false;
-		if(!this.getDayOfWeek().equals(other.getDayOfWeek())) return false;
-		if(!this.getStartTime().equals(other.getStartTime())) return false;
-		if(!this.getEndTime().equals(other.getEndTime())) return false;
-		return true;
+		return 	this.getStartDate().equals(other.getStartDate()) 	&&
+				this.getEndDate().equals(other.getEndDate())		&&
+				this.getDayOfWeek().equals(other.getDayOfWeek()) 	&&
+				this.getStartTime().equals(other.getStartTime())	&&
+				this.getEndTime().equals(other.getEndTime())
+		;
 	}
 	
 	/* (non-Javadoc)
