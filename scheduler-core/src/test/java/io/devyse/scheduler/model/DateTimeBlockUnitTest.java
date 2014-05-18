@@ -1,5 +1,5 @@
 /**
- * @(#) AbstractDateTimeBlockUnitTest.java
+ * @(#) DateTimeBlockUnitTest.java
  *
  * This file is part of the Course Scheduler, an open source, cross platform
  * course scheduling tool, configurable for most universities.
@@ -26,7 +26,6 @@ package io.devyse.scheduler.model;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.ZoneOffset;
 
 import org.testng.Assert;
@@ -42,8 +41,8 @@ import org.testng.asserts.SoftAssert;
  * @author Mike Reinhold
  *
  */
-@Test(groups = {"unit","abstract"})
-public class AbstractDateTimeBlockUnitTest {
+@Test(groups = {"unit","interface","DateTimeBlock.basic"})
+public class DateTimeBlockUnitTest {
 	
 	private static final long TEST_DURATION = 60;
 	private static final long TEST_LENGTH = (long)(1.5*TEST_DURATION);
@@ -93,7 +92,7 @@ public class AbstractDateTimeBlockUnitTest {
 	 * 		i2 has same field data as a but occurring in a date range ending on the start of a
 	 * 		i3 has same field data as a but occurring in a date range that contains a
 	 */
-	private DateTimeBlockStub a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2, h1, i1, i2, i3;
+	private SimpleDateTimeBlock a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2, h1, i1, i2, i3;
 	
 	/**
 	 * Prepare the test instances for use in the tests.
@@ -105,35 +104,35 @@ public class AbstractDateTimeBlockUnitTest {
 	 */
 	@BeforeClass
 	public void setUp() {
-		a1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		a1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		a2 = a1;
-		a3 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
-		a4 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusSeconds(ZONE_1_2_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
-		a5 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
+		a3 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		a4 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME.minusSeconds(ZONE_1_2_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_2_OFFSET), TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
+		a5 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_END_TIME.plusSeconds(ZONE_1_3_OFFSET), TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
 		
-		b1 = new DateTimeBlockStub(TEST_DAY.minus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
-		b2 = new DateTimeBlockStub(TEST_DAY.plus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		b1 = new SimpleDateTimeBlock(TEST_DAY.minus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		b2 = new SimpleDateTimeBlock(TEST_DAY.plus(1), TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		c1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
-		c2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.plusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		c1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		c2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME.plusMinutes(TEST_DURATION), TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		d1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME.minusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
-		d2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME.plusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		d1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME.minusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		d2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME.plusMinutes(TEST_DURATION), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		e1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
-		e2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
+		e1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_2, TEST_START_DATE, TEST_END_DATE);
+		e2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_3, TEST_START_DATE, TEST_END_DATE);
 		
-		f1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(1), TEST_END_DATE);
-		f2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.plusDays(1), TEST_END_DATE);
+		f1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(1), TEST_END_DATE);
+		f2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.plusDays(1), TEST_END_DATE);
 		
-		g1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.minusDays(TEST_PERIOD));
-		g2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.plusDays(TEST_PERIOD));
+		g1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.minusDays(TEST_PERIOD));
+		g2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE.plusDays(TEST_PERIOD));
 		
-		h1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_LENGTH), TEST_END_TIME.minusMinutes(TEST_LENGTH), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
+		h1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME.minusMinutes(TEST_LENGTH), TEST_END_TIME.minusMinutes(TEST_LENGTH), TEST_ZONE_1, TEST_START_DATE, TEST_END_DATE);
 		
-		i1 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(2*TEST_PERIOD), TEST_START_DATE.minusDays(TEST_PERIOD));
-		i2 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_START_DATE);
-		i3 = new DateTimeBlockStub(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_END_DATE.plusDays(TEST_PERIOD));
+		i1 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(2*TEST_PERIOD), TEST_START_DATE.minusDays(TEST_PERIOD));
+		i2 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_START_DATE);
+		i3 = new SimpleDateTimeBlock(TEST_DAY, TEST_START_TIME, TEST_END_TIME, TEST_ZONE_1, TEST_START_DATE.minusDays(TEST_PERIOD), TEST_END_DATE.plusDays(TEST_PERIOD));
 	}
 		
 	/**
@@ -410,42 +409,5 @@ public class AbstractDateTimeBlockUnitTest {
 		olAssert.assertEquals(a1.overlapsWith(h1), false, "DateTimeBlocks with different time block should not overlap");;
 						
 		olAssert.assertAll();
-	}
-	
-	/**
-	 * Stub implementation of DateTimeBlock via AbstractDateTimeBlock to unit test the base functionality
-	 * of the AbstractDateTimeBlock class (constructors, equals, hashCode, compareTo, duration, etc)
-	 *
-	 * @author Mike Reinhold
-	 *
-	 */
-	public static class DateTimeBlockStub extends AbstractDateTimeBlock{
-
-		/**
-		 * Create a new DateTimeBlockStub using local times and a specific time zone
-		 * 
-		 * @param dow the day of the week
-		 * @param startTime the local start time
-		 * @param endTime the local end time
-		 * @param zone the time zone reference for the local times
-		 * @param startDate the start date
-		 * @param endDate the end date
-		 */
-		protected DateTimeBlockStub(DayOfWeek dow, LocalTime startTime, LocalTime endTime,	ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
-			super(dow, startTime, endTime, zone, startDate, endDate);
-		}
-		
-		/**
-		 * Create a new DateTimeBlockStub using the zoned times
-		 *
-		 * @param dow the day of the week
-		 * @param startTime the zoned start time
-		 * @param endTime the zoned end time
-		 * @param startDate the start date
-		 * @param endDate the end date
-		 */
-		protected DateTimeBlockStub(DayOfWeek dow, OffsetTime startTime, OffsetTime endTime, LocalDate startDate, LocalDate endDate) {
-			super(dow, startTime, endTime, startDate, endDate);
-		}
 	}
 }
