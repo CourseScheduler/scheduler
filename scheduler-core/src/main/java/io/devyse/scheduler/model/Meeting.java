@@ -51,7 +51,7 @@ public interface Meeting extends Comparable<Meeting> {
 	 *
 	 * @return the campus portion of the location
 	 */
-	public String getCampus();
+	public String getCampus();		//ANALYZE should campus be up a level?
 	
 	/**
 	 * The name or address of the building at which the Meeting

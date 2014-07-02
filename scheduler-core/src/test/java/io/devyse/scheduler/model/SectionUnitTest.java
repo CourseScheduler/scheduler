@@ -1,5 +1,5 @@
 /**
- * @(#) AbstractMeetingUnitTest.java
+ * @(#) SectionUnitTest.java
  *
  * This file is part of the Course Scheduler, an open source, cross platform
  * course scheduling tool, configurable for most universities.
@@ -23,13 +23,15 @@
  */
 package io.devyse.scheduler.model;
 
+import org.testng.annotations.Test;
+
 /**
- * Unit tests for the AbstractMeeting base class to confirm the default
- * functionality has appropriate semantics.
+ * Unit tests for the Section and AbstractSection classes and base functionality
  *
  * @author Mike Reinhold
  *
  */
-public class AbstractMeetingUnitTest {
+@Test(groups = {"unit","interface","Section.basic"})
+public class SectionUnitTest {
 	
 }
