@@ -146,20 +146,20 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmEquality() {
-		SoftAssert eqAssert = new SoftAssert();
+		SoftAssert eq = new SoftAssert();
 		
-		eqAssert.assertSame(a1, a2, "References to same instance should be the same");
-		eqAssert.assertEquals(a1, a2, "References to same instance should be equal");
-		eqAssert.assertEquals(a1, a3, "Instances with same uniqueness fields should be equal");
-		eqAssert.assertNotEquals(a1, a4, "Instances with UTC equivalent times in different zones should not be equal");
-		eqAssert.assertNotEquals(a1, b1, "Instances with varying days of week should not be equal");
-		eqAssert.assertNotEquals(a1, c1, "Instances with varying start times should not be equal");
-		eqAssert.assertNotEquals(a1, d1, "Instances with varying end times should not be equal");
-		eqAssert.assertNotEquals(a1, e1, "Instances with varying time zones should not be equal");
-		eqAssert.assertNotEquals(a1, f1, "Instances with varying start dates should not be equal");
-		eqAssert.assertNotEquals(a1, g1, "Instances with varying end dates should not be equal");
+		eq.assertSame(a1, a2, "References to same instance should be the same");
+		eq.assertEquals(a1, a2, "References to same instance should be equal");
+		eq.assertEquals(a1, a3, "Instances with same uniqueness fields should be equal");
+		eq.assertNotEquals(a1, a4, "Instances with UTC equivalent times in different zones should not be equal");
+		eq.assertNotEquals(a1, b1, "Instances with varying days of week should not be equal");
+		eq.assertNotEquals(a1, c1, "Instances with varying start times should not be equal");
+		eq.assertNotEquals(a1, d1, "Instances with varying end times should not be equal");
+		eq.assertNotEquals(a1, e1, "Instances with varying time zones should not be equal");
+		eq.assertNotEquals(a1, f1, "Instances with varying start dates should not be equal");
+		eq.assertNotEquals(a1, g1, "Instances with varying end dates should not be equal");
 						
-		eqAssert.assertAll();
+		eq.assertAll();
 	}
 
 	/**
@@ -175,13 +175,15 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmHashCode() {
-		SoftAssert hcAssert = new SoftAssert();
+		SoftAssert hc = new SoftAssert();
 		
-		hcAssert.assertEquals(a1.hashCode(), a2.hashCode(), "References to same instance should have same hashcode. Hashcode not consistent across calls");
-		hcAssert.assertEquals(a1.hashCode(), a3.hashCode(), "Instances with same uniqueness fields should have same hashcode. Hashcode not consistent with equals()");
+		hc.assertEquals(a1.hashCode(), a2.hashCode(), "References to same instance should have same hashcode. Hashcode not consistent across calls");
+		hc.assertEquals(a1.hashCode(), a3.hashCode(), "Instances with same uniqueness fields should have same hashcode. Hashcode not consistent with equals()");
 		
 		//ensure that our sample dataset, which has variety in its field content,
 		//has some variation in its hashcode. No variation in hash would be bad 
+		//this is not sufficient on its own, a good hash should have a uniform, 
+		//non-clustering distribution
 		int a1Code = a1.hashCode();
 		boolean variety = a1Code == b1.hashCode() &&
 				a1Code == b2.hashCode() &&
@@ -196,9 +198,11 @@ public class DateTimeBlockUnitTest {
 				a1Code == g1.hashCode() &&
 				a1Code == g2.hashCode()
 		;
-		hcAssert.assertFalse(variety, "Hashcode should return a variety of values for instance with varying uniqueness fields");
+		hc.assertFalse(variety, "Hashcode should return a variety of values for instance with varying uniqueness fields");
 		
-		hcAssert.assertAll();
+		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
+		
+		hc.assertAll();
 	}
 	
 	/**
@@ -219,50 +223,50 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmCompareTo() {
-		SoftAssert ctAssert = new SoftAssert();
+		SoftAssert ct = new SoftAssert();
 		
-		ctAssert.assertEquals(a1.compareTo(a2), 0, "References to same instance should be equal");
-		ctAssert.assertEquals(a2.compareTo(a1), 0, "References to same instance should be equal, regardless of comparison direction");
-		ctAssert.assertEquals(a1.compareTo(a3), 0, "CompareTo should be consistent with equals() for equal instances");
-		ctAssert.assertEquals(a3.compareTo(a1), 0, "CompareTo should be consistent with equals() for equal instance, regardless of comparison direction");
+		ct.assertEquals(a1.compareTo(a2), 0, "References to same instance should be equal");
+		ct.assertEquals(a2.compareTo(a1), 0, "References to same instance should be equal, regardless of comparison direction");
+		ct.assertEquals(a1.compareTo(a3), 0, "CompareTo should be consistent with equals() for equal instances");
+		ct.assertEquals(a3.compareTo(a1), 0, "CompareTo should be consistent with equals() for equal instance, regardless of comparison direction");
 		
-		ctAssert.assertNotEquals(a1.compareTo(b1), 0, "CompareTo should be consistent with equals() for non-equal instance");
-		ctAssert.assertNotEquals(b1.compareTo(a1), 0, "CompareTo should be consistent with equals() for non-equal instance, regardless of comparison direction");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(-b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day of week)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(-b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day of week)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(-c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start time)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(-c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start time)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(-d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end time))");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(-d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end time)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), Math.signum(-e1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser zone)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), Math.signum(-e2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater zone)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(f1)), Math.signum(-f1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start date)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(f2)), Math.signum(-f2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start date)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(g1)), Math.signum(-g1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end date)");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(g2)), Math.signum(-g2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end date)");
+		ct.assertNotEquals(a1.compareTo(b1), 0, "CompareTo should be consistent with equals() for non-equal instance");
+		ct.assertNotEquals(b1.compareTo(a1), 0, "CompareTo should be consistent with equals() for non-equal instance, regardless of comparison direction");
+		ct.assertEquals(Math.signum(a1.compareTo(b1)), Math.signum(-b1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser day of week)");
+		ct.assertEquals(Math.signum(a1.compareTo(b2)), Math.signum(-b2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater day of week)");
+		ct.assertEquals(Math.signum(a1.compareTo(c1)), Math.signum(-c1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start time)");
+		ct.assertEquals(Math.signum(a1.compareTo(c2)), Math.signum(-c2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start time)");
+		ct.assertEquals(Math.signum(a1.compareTo(d1)), Math.signum(-d1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end time))");
+		ct.assertEquals(Math.signum(a1.compareTo(d2)), Math.signum(-d2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end time)");
+		ct.assertEquals(Math.signum(a1.compareTo(e1)), Math.signum(-e1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser zone)");
+		ct.assertEquals(Math.signum(a1.compareTo(e2)), Math.signum(-e2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater zone)");
+		ct.assertEquals(Math.signum(a1.compareTo(f1)), Math.signum(-f1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser start date)");
+		ct.assertEquals(Math.signum(a1.compareTo(f2)), Math.signum(-f2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater start date)");
+		ct.assertEquals(Math.signum(a1.compareTo(g1)), Math.signum(-g1.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (lesser end date)");
+		ct.assertEquals(Math.signum(a1.compareTo(g2)), Math.signum(-g2.compareTo(a1)), "CompareTo should reverse sign for reversed comparison direction of non-equal instances (greater end date)");
 				
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b1)), 1.0f, "Positive result expected for instance with lesser day of week");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c1)), 1.0f, "Positive result expected for instance with lesser start time");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d1)), 1.0f, "Positive result expected for instance with lesser end time");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e1)), -1.0f, "Negative result expected for instance with lesser zone");	//timezones are sorted descending
-		ctAssert.assertEquals(Math.signum(a1.compareTo(f1)), 1.0f, "Positive result expected for instance with lesser start date");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(g1)), 1.0f, "Positive result expected for instance with lesser end date");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(a4)), 1.0f, "Positive result expected for instance with same UTC but lesser zone");
+		ct.assertEquals(Math.signum(a1.compareTo(b1)), 1.0f, "Positive result expected for instance with lesser day of week");
+		ct.assertEquals(Math.signum(a1.compareTo(c1)), 1.0f, "Positive result expected for instance with lesser start time");
+		ct.assertEquals(Math.signum(a1.compareTo(d1)), 1.0f, "Positive result expected for instance with lesser end time");
+		ct.assertEquals(Math.signum(a1.compareTo(e1)), -1.0f, "Negative result expected for instance with lesser zone");	//timezones are sorted descending
+		ct.assertEquals(Math.signum(a1.compareTo(f1)), 1.0f, "Positive result expected for instance with lesser start date");
+		ct.assertEquals(Math.signum(a1.compareTo(g1)), 1.0f, "Positive result expected for instance with lesser end date");
+		ct.assertEquals(Math.signum(a1.compareTo(a4)), 1.0f, "Positive result expected for instance with same UTC but lesser zone");
 
-		ctAssert.assertEquals(Math.signum(a1.compareTo(b2)), -1.0f, "Negative result expected for instance with greater day of week");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(c2)), -1.0f, "Negative result expected for instance with greater start time");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(d2)), -1.0f, "Negative result expected for instance with greater end time");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(e2)), 1.0f, "Positive result expected for instance with greater zone");	//timezones are sorted descending
-		ctAssert.assertEquals(Math.signum(a1.compareTo(f2)), -1.0f, "Negative result expected for instance with greater start date");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(g2)), -1.0f, "Negative result expected for instance with greater end date");
-		ctAssert.assertEquals(Math.signum(a1.compareTo(a5)), -1.0f, "Negative result expected for instance with same UTC but greater zone");
+		ct.assertEquals(Math.signum(a1.compareTo(b2)), -1.0f, "Negative result expected for instance with greater day of week");
+		ct.assertEquals(Math.signum(a1.compareTo(c2)), -1.0f, "Negative result expected for instance with greater start time");
+		ct.assertEquals(Math.signum(a1.compareTo(d2)), -1.0f, "Negative result expected for instance with greater end time");
+		ct.assertEquals(Math.signum(a1.compareTo(e2)), 1.0f, "Positive result expected for instance with greater zone");	//timezones are sorted descending
+		ct.assertEquals(Math.signum(a1.compareTo(f2)), -1.0f, "Negative result expected for instance with greater start date");
+		ct.assertEquals(Math.signum(a1.compareTo(g2)), -1.0f, "Negative result expected for instance with greater end date");
+		ct.assertEquals(Math.signum(a1.compareTo(a5)), -1.0f, "Negative result expected for instance with same UTC but greater zone");
 		
-		ctAssert.assertEquals(Math.signum(b1.compareTo(a1)), Math.signum(a1.compareTo(b2)), "Transitivity expected for instances differing on day of week");
-		ctAssert.assertEquals(Math.signum(c1.compareTo(a1)), Math.signum(a1.compareTo(c2)), "Transitivity expected for instances differing on start");
-		ctAssert.assertEquals(Math.signum(d1.compareTo(a1)), Math.signum(a1.compareTo(d2)), "Transitivity expected for instances differing on end");
-		ctAssert.assertEquals(Math.signum(e1.compareTo(a1)), Math.signum(a1.compareTo(e2)), "Transitivity expected for instances differing on zone");
+		ct.assertEquals(Math.signum(b1.compareTo(a1)), Math.signum(a1.compareTo(b2)), "Transitivity expected for instances differing on day of week");
+		ct.assertEquals(Math.signum(c1.compareTo(a1)), Math.signum(a1.compareTo(c2)), "Transitivity expected for instances differing on start");
+		ct.assertEquals(Math.signum(d1.compareTo(a1)), Math.signum(a1.compareTo(d2)), "Transitivity expected for instances differing on end");
+		ct.assertEquals(Math.signum(e1.compareTo(a1)), Math.signum(a1.compareTo(e2)), "Transitivity expected for instances differing on zone");
 		
-		ctAssert.assertAll();
+		ct.assertAll();
 	}
 	
 	/**
@@ -292,21 +296,21 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmDayOfWeekOverlap() {
-		SoftAssert olAssert = new SoftAssert();
+		SoftAssert ol = new SoftAssert();
 		
 		//day of week matches should overlap
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a2), true, "DateTimeBlocks with same day of week should overlap");
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a3), true, "DateTimeBlocks with same day of week should overlap");
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a4), true, "DateTimeBlocks with same day of week should overlap");
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(a5), true, "DateTimeBlocks with same day of week should overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(a2), true, "DateTimeBlocks with same day of week should overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(a3), true, "DateTimeBlocks with same day of week should overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(a4), true, "DateTimeBlocks with same day of week should overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(a5), true, "DateTimeBlocks with same day of week should overlap");
 
 		//day of week differing should not overlap
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(b1), false, "DateTimeBlocks on different days should not overlap");
-		olAssert.assertEquals(b1.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
-		olAssert.assertEquals(a1.dayOfWeekOverlapsWith(b2), false, "DateTimeBlocks on different days should not overlap");
-		olAssert.assertEquals(b2.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(b1), false, "DateTimeBlocks on different days should not overlap");
+		ol.assertEquals(b1.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
+		ol.assertEquals(a1.dayOfWeekOverlapsWith(b2), false, "DateTimeBlocks on different days should not overlap");
+		ol.assertEquals(b2.dayOfWeekOverlapsWith(a1), false, "DateTimeBlocks on different days should not overlap");
 
-		olAssert.assertAll();
+		ol.assertAll();
 	}
 	
 	/**
@@ -318,27 +322,27 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmDateRangeOverlap() {
-		SoftAssert olAssert = new SoftAssert();
+		SoftAssert ol = new SoftAssert();
 		
 		//same date range should overlap
-		olAssert.assertEquals(a1.dateOverlapsWith(a2), true, "DateTimeBlocks with same date range should overlap");
-		olAssert.assertEquals(a1.dateOverlapsWith(a3), true, "DateTimeBlocks with same date range should overlap");
-		olAssert.assertEquals(a1.dateOverlapsWith(a4), true, "DateTimeBlocks with same date range should overlap");
-		olAssert.assertEquals(a1.dateOverlapsWith(a5), true, "DateTimeBlocks with same date range should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(a2), true, "DateTimeBlocks with same date range should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(a3), true, "DateTimeBlocks with same date range should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(a4), true, "DateTimeBlocks with same date range should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(a5), true, "DateTimeBlocks with same date range should overlap");
 
 		//check different (non-sharing) ranges don't overlap
-		olAssert.assertEquals(a1.dateOverlapsWith(i1), false, "DateTimeBlocks with non-sharing date range should not overlap");
-		olAssert.assertEquals(i1.dateOverlapsWith(a1), false, "DateTimeBlocks with non-sharing date range should not overlap");
+		ol.assertEquals(a1.dateOverlapsWith(i1), false, "DateTimeBlocks with non-sharing date range should not overlap");
+		ol.assertEquals(i1.dateOverlapsWith(a1), false, "DateTimeBlocks with non-sharing date range should not overlap");
 		
 		//check start/end date aligning ranges (where the start of one is the end of another) overlap
-		olAssert.assertEquals(a1.dateOverlapsWith(i2), true, "DateTimeBlocks with aligned start & end dates should overlap");
-		olAssert.assertEquals(i2.dateOverlapsWith(a1), true, "DateTimeBlocks with aligned start & end dates should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(i2), true, "DateTimeBlocks with aligned start & end dates should overlap");
+		ol.assertEquals(i2.dateOverlapsWith(a1), true, "DateTimeBlocks with aligned start & end dates should overlap");
 		
 		//check offset ranges that share dates overlap
-		olAssert.assertEquals(a1.dateOverlapsWith(i3), true, "DateTimeBlocks with shared date range should overlap");
-		olAssert.assertEquals(i3.dateOverlapsWith(a1), true, "DateTimeBlocks with shared date range should overlap");
+		ol.assertEquals(a1.dateOverlapsWith(i3), true, "DateTimeBlocks with shared date range should overlap");
+		ol.assertEquals(i3.dateOverlapsWith(a1), true, "DateTimeBlocks with shared date range should overlap");
 		
-		olAssert.assertAll();
+		ol.assertAll();
 	}
 	
 	/**
@@ -355,31 +359,31 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmTimeBlockOverlap() {
-		SoftAssert olAssert = new SoftAssert();
+		SoftAssert ol = new SoftAssert();
 
 		//time blocks with shared start or end should overlap
-		olAssert.assertEquals(a1.timeOverlapsWith(a2), true, "DateTimeBlocks with same time block should overlap");
-		olAssert.assertEquals(a1.timeOverlapsWith(a3), true, "DateTimeBlocks with same time block should overlap");
-		olAssert.assertEquals(a1.timeOverlapsWith(a4), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
-		olAssert.assertEquals(a1.timeOverlapsWith(a5), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(a2), true, "DateTimeBlocks with same time block should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(a3), true, "DateTimeBlocks with same time block should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(a4), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(a5), true, "DateTimeBlocks with semantically equivalent time blocks should overlap");
 
 		//shared start should overlap (shared end is same as next set - start is inclusive)
-		olAssert.assertEquals(a1.timeOverlapsWith(d1), true, "DateTimeBlocks that share only a start time overlap");
-		olAssert.assertEquals(a1.timeOverlapsWith(d2), true, "DateTimeBlocks that share only a start time overlap");
+		ol.assertEquals(a1.timeOverlapsWith(d1), true, "DateTimeBlocks that share only a start time overlap");
+		ol.assertEquals(a1.timeOverlapsWith(d2), true, "DateTimeBlocks that share only a start time overlap");
 		
 		//time block is inclusive of other time block's start or other time block is inclusive of first block's start should overlap
-		olAssert.assertEquals(a1.timeOverlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
-		olAssert.assertEquals(a1.timeOverlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(c1), true, "This DateTimeBlock with start time between other DateTimeBlock start and end times should overlap");
+		ol.assertEquals(a1.timeOverlapsWith(c2), true, "Other DateTimeBlock with start time between this DateTimeBlock start and end times should overlap");
 		
 		//neither start time is inclusive of the other block (and not the same as other start time) should not overlap
-		olAssert.assertEquals(d1.timeOverlapsWith(c2), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
-		olAssert.assertEquals(c2.timeOverlapsWith(d1), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		ol.assertEquals(d1.timeOverlapsWith(c2), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
+		ol.assertEquals(c2.timeOverlapsWith(d1), false, "Neither start nor end time of other DateTimeBlock between this DateTimeBlock start and end times should not overlap");
 
 		//start time of one matches end time of another should not overlap - zero passing periods are allowed
-		olAssert.assertEquals(a1.timeOverlapsWith(h1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
-		olAssert.assertEquals(h1.timeOverlapsWith(a1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
+		ol.assertEquals(a1.timeOverlapsWith(h1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
+		ol.assertEquals(h1.timeOverlapsWith(a1), false, "Periods that share a end or start time only should not overlap (zero passing period allowed)");
 		
-		olAssert.assertAll();
+		ol.assertAll();
 	}
 	
 	/**
@@ -391,23 +395,23 @@ public class DateTimeBlockUnitTest {
 	 */
 	@Test
 	public void confirmOverlap() {
-		SoftAssert olAssert = new SoftAssert();
+		SoftAssert ol = new SoftAssert();
 		
 		//all fiends match should overlap
-		olAssert.assertEquals(a1.overlapsWith(a2), true, "DateTimeBlocks with same fields should overlap");
-		olAssert.assertEquals(a1.overlapsWith(a3), true, "DateTimeBlocks with same fields should overlap");
-		olAssert.assertEquals(a1.overlapsWith(a4), true, "DateTimeBlocks with semantically equivalent fields should overlap");
-		olAssert.assertEquals(a1.overlapsWith(a5), true, "DateTimeBlocks with semantically equivalent fields should overlap");
+		ol.assertEquals(a1.overlapsWith(a2), true, "DateTimeBlocks with same fields should overlap");
+		ol.assertEquals(a1.overlapsWith(a3), true, "DateTimeBlocks with same fields should overlap");
+		ol.assertEquals(a1.overlapsWith(a4), true, "DateTimeBlocks with semantically equivalent fields should overlap");
+		ol.assertEquals(a1.overlapsWith(a5), true, "DateTimeBlocks with semantically equivalent fields should overlap");
 		
 		//check different day of week makes DateTimeBlock not overlap
-		olAssert.assertEquals(a1.overlapsWith(b1), false, "DateTimeBlocks with different day of week should not overlap");
+		ol.assertEquals(a1.overlapsWith(b1), false, "DateTimeBlocks with different day of week should not overlap");
 		
 		//check different date range makes DateTimeBlock not overlap
-		olAssert.assertEquals(a1.overlapsWith(i1), false, "DateTimeBlocks with different date range should not overlap");
+		ol.assertEquals(a1.overlapsWith(i1), false, "DateTimeBlocks with different date range should not overlap");
 		
 		//check different time block makes DateTimeBlock not overlap
-		olAssert.assertEquals(a1.overlapsWith(h1), false, "DateTimeBlocks with different time block should not overlap");;
+		ol.assertEquals(a1.overlapsWith(h1), false, "DateTimeBlocks with different time block should not overlap");;
 						
-		olAssert.assertAll();
+		ol.assertAll();
 	}
 }

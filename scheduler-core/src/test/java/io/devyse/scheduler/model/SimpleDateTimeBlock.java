@@ -49,7 +49,7 @@ public class SimpleDateTimeBlock extends AbstractDateTimeBlock{
 	 * @param startDate the start date
 	 * @param endDate the end date
 	 */
-	protected SimpleDateTimeBlock(DayOfWeek dow, LocalTime startTime, LocalTime endTime,	ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
+	protected SimpleDateTimeBlock(DayOfWeek dow, LocalTime startTime, LocalTime endTime, ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
 		super(dow, startTime, endTime, zone, startDate, endDate);
 	}
 	
