@@ -45,8 +45,8 @@ public interface Meeting extends Comparable<Meeting> {
 	public DateTimeBlock getDateTimeBlock();
 	
 	/**
-	 * The name of the campus at which the Meeting occurs. This 
-	 * method returns null if the Meeting location is not yet
+	 * The name or address of the campus at which the Meeting occurs.
+	 * This method returns null if the Meeting location is not yet
 	 * announced
 	 *
 	 * @return the campus portion of the location
