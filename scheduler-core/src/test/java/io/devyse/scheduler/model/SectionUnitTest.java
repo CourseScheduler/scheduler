@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
  *
  */
 @Test(	groups = {"unit","interface","Section.basic"},
-		dependsOnGroups = {"Meeting.basic"} 
+		dependsOnGroups = {"Meeting.basic", "Term.basic"} 
 )
 public class SectionUnitTest {
 	
