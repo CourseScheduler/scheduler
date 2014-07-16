@@ -252,4 +252,8 @@
 		<!-- TODO -->
 	</build>
   
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/CourseScheduler/scheduler/issues</url>
+	</issueManagement>
 </project>
