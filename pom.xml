@@ -44,7 +44,7 @@
   
 	<scm>
 		<url>https://github.com/CourseScheduler/scheduler</url>
-		<connection>git@github.com:CourseScheduler/scheduler.git</connection>
+		<connection>scm:git@github.com:CourseScheduler/scheduler.git</connection>
 	</scm>
   
 	<distributionManagement>
@@ -68,7 +68,8 @@
   
 	<properties>
 		<!-- Source Code and Target JVM version -->
-		<jdk.version>1.8</jdk.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+ 		<maven.compiler.target>1.8</maven.compiler.target>
 		
 		<!-- Source file encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,13 +79,6 @@
 		<copyright.start>2010</copyright.start>
 		<copyright.end>2014</copyright.end>
 		<copyright.holder>Devyse.io</copyright.holder>
-		
-		<!-- Dependency versions -->
-		<slf4j.version>1.7.7</slf4j.version>
-		
-		<!-- Plugin versions -->
-		<mycila.license.version>2.6</mycila.license.version>
-		<codehaus.license.version>1.6</codehaus.license.version>
 		
 		<!-- TODO -->
 	</properties>
@@ -107,7 +101,6 @@
 					<plugin>
 						<groupId>com.mycila</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>${mycila.license.version}</version>
 						<configuration>
 							<quiet>false</quiet>
 							<failIfMissing>true</failIfMissing>
@@ -141,7 +134,6 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>license-maven-plugin</artifactId>
-						<version>${codehaus.license.version}</version>
 						<configuration>
 							 <licenseName>${codehaus.licenseName}</licenseName>
 						</configuration>
@@ -174,6 +166,21 @@
 	</repositories>
 	
 	<dependencies>
+	
+		<!-- Include TestNG for testing -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Include Mockito for mocking -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- TODO -->
 	</dependencies>
 
@@ -183,7 +190,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
   				<artifactId>slf4j-api</artifactId>
-  				<version>${slf4j.version}</version>
+  				<version>1.7.7</version>
 			</dependency>
 			<!-- TODO Redirect JUL to SLF4j -->
 			<!-- TODO Redirect log4j to SLF4j -->
@@ -191,7 +198,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
-				<version>${slf4j.version}</version>
+				<version>1.7.7</version>
 			</dependency>
 			<!-- Mask other JCL dependencies via empty JCL -->
 			<dependency>
@@ -200,12 +207,53 @@
 				<version>99-empty</version>
 			</dependency>
 			
+			<!-- Testing Framework for unit and integration testing -->
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>6.8.8</version>
+				<scope>test</scope>
+			</dependency>
+			
+			<!-- Mocking framework for unit testing -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.9.5</version>
+				<scope>test</scope>
+			</dependency>
+            
 			<!-- TODO Other dependencies-->
 		</dependencies>
 	</dependencyManagement>
   
-	<build>		
+	<build>	
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.6</version>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+	 				<groupId>org.codehaus.mojo</groupId>
+	 				<artifactId>findbugs-maven-plugin</artifactId>
+	 				<version>2.5.3</version>
+	 			</plugin>
+			</plugins>
+		</pluginManagement>
+	
+		
 		<!-- TODO -->
 	</build>
   
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/CourseScheduler/scheduler/issues</url>
+	</issueManagement>
 </project>
