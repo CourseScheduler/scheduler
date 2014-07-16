@@ -31,7 +31,9 @@ import org.testng.annotations.Test;
  * @author Mike Reinhold
  *
  */
-@Test(groups = {"unit","interface","Section.basic"})
+@Test(	groups = {"unit","interface","Section.basic"},
+		dependsOnGroups = {"Meeting.basic"} 
+)
 public class SectionUnitTest {
 	
 }

@@ -23,6 +23,8 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Objects;
+
 /**
  * Represent the registration unit of a given course.
  *
@@ -30,7 +32,7 @@ package io.devyse.scheduler.model;
  *
  */
 public interface Section extends Comparable<Section> {
-	
+		
 	/**
 	 * The CRN is the course registration number that is used
 	 * by the registrar to identify a specific Section during
@@ -40,28 +42,87 @@ public interface Section extends Comparable<Section> {
 	 */
 	public String getCRN();
 	
-	//seat availability
+	/**
+	 * The Course Identifier is the common code for the course, 
+	 * often represented by a department character sequence and
+	 * a number (aka, "BIO 101" or "CE-210"). The exact format of 
+	 * the course identifier may vary significantly
+	 *
+	 * @return the course identifier
+	 */
+	public String getCourseID();
+
+	/**
+	 * A description of the content of the course, often includes
+	 * details about the topics of study
+	 *
+	 * @return the course description
+	 */
+	public String getDescription();
 	
-	//TODO course/listing, term
+	/**
+	 * The name of the course, for example "Computing and Algorithms
+	 * III"
+	 *
+	 * @return the course name
+	 */
+	public String getName();
+	
+	/**
+	 * The section identifier which uniquely identifies the section
+	 * within the course (aka: CE-210-01 where CE-210 is the course 
+	 * id and 01 is the section identifier). Usually numeric though 
+	 * may include characters to identify labs versus seminars versus
+	 * other types of sections. 
+	 *
+	 * @return the section identifier
+	 */
+	public String getSectionID();
+	
+	/**
+	 * The registration term as identified by the university
+	 *
+	 * @return the registration term
+	 */
+	public Term getTerm();
+	
+	
+	//TODO seat availability
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public default boolean equals(Section other) {
-		//TODO implement this
-		return false;
+		return	this.getTerm().equals(other.getTerm()) &&
+				this.getCRN().equals(other.getCRN())
+		;
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	public default int getHashCode() {
-		//TODO implement this
-		return 0;
+		return Objects.hash(
+				this.getTerm(),
+				this.getCRN()
+		);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	public default int compareTo(Section other) {
-		//TODO implement this
-		return 0;
+		int result = this.getTerm().compareTo(other.getTerm());
+		
+		if(result == 0){
+			//slightly different than the equals or hashCode because we would want to sort
+			//by course ID and section ID, not CRN
+			result = this.getCourseID().compareTo(other.getCourseID());
+			if(result == 0){
+				result = this.getSectionID().compareTo(other.getSectionID());
+			}
+		}
+		
+		return result;
 	}
 }

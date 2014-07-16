@@ -291,6 +291,45 @@ public class MeetingUnitTest {
 		public String getCRN() {
 			return this.getId().toString();
 		}
-		
+
+		/* (non-Javadoc)
+		 * @see io.devyse.scheduler.model.Section#getCourseID()
+		 */
+		@Override
+		public String getCourseID() {
+			return "";
+		}
+
+		/* (non-Javadoc)
+		 * @see io.devyse.scheduler.model.Section#getDescription()
+		 */
+		@Override
+		public String getDescription() {
+			return "";
+		}
+
+		/* (non-Javadoc)
+		 * @see io.devyse.scheduler.model.Section#getName()
+		 */
+		@Override
+		public String getName() {
+			return "";
+		}
+
+		/* (non-Javadoc)
+		 * @see io.devyse.scheduler.model.Section#getSectionID()
+		 */
+		@Override
+		public String getSectionID() {
+			return "";
+		}
+
+		/* (non-Javadoc)
+		 * @see io.devyse.scheduler.model.Section#getTerm()
+		 */
+		@Override
+		public Term getTerm() {
+			return null;
+		}
 	}
 }
