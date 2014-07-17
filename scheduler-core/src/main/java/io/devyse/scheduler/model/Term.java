@@ -23,6 +23,8 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Objects;
+
 /**
  * Represent the registration term 
  *
@@ -31,27 +33,61 @@ package io.devyse.scheduler.model;
  */
 public interface Term extends Comparable<Term> {
 	
+	//TODO university object instead of simple string? probably should...
+	
+	/**
+	 * The university for which this registration term is valid
+	 *
+	 * @return the university for this term
+	 */
+	public String getUniversity();
+	
+	/**
+	 * The unique term identifier for this term as defined by
+	 * the university. Often a numeric representation of the
+	 * year and semester (201402)
+	 *
+	 * @return the term identifier
+	 */
+	public String getId();
+	
+	/**
+	 * The common name of the term as defined by the university.
+	 * Often a "plain language" representation of the year and
+	 * semester (Spring 2014)
+	 *
+	 * @return the term name
+	 */
+	public String getName();
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public default boolean equals(Term other) {
-		//TODO method stub
-		return false;
+		return	this.getUniversity().equals(other.getUniversity()) &&
+				this.getId().equals(other.getId())
+		;
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	public default int getHashCode() {
-		//TODO method stub
-		return 0;
+		return Objects.hash(
+				this.getUniversity(),
+				this.getId()
+		);
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public default int compareTo(Term other) {
-		//TODO method stub
-		return 0;
+		int result = this.getUniversity().compareTo(other.getUniversity());
+		
+		if(result == 0){
+			result = this.getId().compareTo(other.getId());
+		}
+		return result;
 	}
 }

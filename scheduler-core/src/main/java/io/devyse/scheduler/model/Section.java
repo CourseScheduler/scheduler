@@ -36,7 +36,8 @@ public interface Section extends Comparable<Section> {
 	/**
 	 * The CRN is the course registration number that is used
 	 * by the registrar to identify a specific Section during
-	 * registration.
+	 * registration. CRNs are generally only unique within
+	 * a registration term
 	 *
 	 * @return the course registration number
 	 */
@@ -50,7 +51,7 @@ public interface Section extends Comparable<Section> {
 	 *
 	 * @return the course identifier
 	 */
-	public String getCourseID();
+	public String getCourseId();
 
 	/**
 	 * A description of the content of the course, often includes
@@ -77,7 +78,7 @@ public interface Section extends Comparable<Section> {
 	 *
 	 * @return the section identifier
 	 */
-	public String getSectionID();
+	public String getSectionId();
 	
 	/**
 	 * The registration term as identified by the university
@@ -87,7 +88,7 @@ public interface Section extends Comparable<Section> {
 	public Term getTerm();
 	
 	
-	//TODO seat availability
+	//TODO seat availability, other fields?
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -117,9 +118,9 @@ public interface Section extends Comparable<Section> {
 		if(result == 0){
 			//slightly different than the equals or hashCode because we would want to sort
 			//by course ID and section ID, not CRN
-			result = this.getCourseID().compareTo(other.getCourseID());
+			result = this.getCourseId().compareTo(other.getCourseId());
 			if(result == 0){
-				result = this.getSectionID().compareTo(other.getSectionID());
+				result = this.getSectionId().compareTo(other.getSectionId());
 			}
 		}
 		

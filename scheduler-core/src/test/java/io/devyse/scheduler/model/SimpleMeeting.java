@@ -34,10 +34,21 @@ package io.devyse.scheduler.model;
 public class SimpleMeeting extends AbstractMeeting {
 	
 	/**
-	 * TODO Describe this constructor
+	 * Create a new SimpleMeeting with the specified parent Section and
+	 * DateTimeBlock
 	 *
 	 */
 	public SimpleMeeting(Section parent, DateTimeBlock dateTimeBlock) {
 		super(parent, dateTimeBlock);
+		
+		//TODO ensure that the AbstractMeeting is fully initialized?
+		/*
+		 * this.setCampus("campus");
+		 * this.setBuilding("building");
+		 * this.setRoom("room");
+		 * this.setMeetingType("meeting type");
+		 * this.setScheduleType("schedule type");
+		 * this.setInstructors(new HashSet<>());
+		 */
 	}	
 }

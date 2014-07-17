@@ -25,6 +25,7 @@ package io.devyse.scheduler.model;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 /**
  * Unit tests for the Term and AbstractTerm interface and base
@@ -40,15 +41,42 @@ import org.testng.annotations.Test;
 public class TermUnitTest {
 	
 	/**
+	 * Simple values for comparisons
+	 */
+	private static final String less = "1";
+	private static final String middle = "5";
+	private static final String more = "9";
+	
+	/**
+	 * Term instances for testing basic function. Relationship is as follows:
+	 * 
+	 * 		instance = university, id
+	 * 		
+	 * 		t1 = middle, middle
+	 * 		t2 = t1
+	 * 		t3 = middle, middle
+	 * 		t4 = less, middle
+	 * 		t5 = more, middle
+	 * 		t6 = middle, less
+	 * 		t7 = middle, more
+	 */
+	private Term t1, t2, t3, t4, t5, t6, t7;
+	
+	/**
 	 * Prepare the test instances and necessary stubs for use in the tests
 	 *
 	 */
 	@BeforeClass
 	public void setup() {
-		//TODO test setup
+		t1 = new SimpleTerm(middle, middle);
+		t2 = t1;
+		t3 = new SimpleTerm(middle, middle);
+		t4 = new SimpleTerm(less, middle);
+		t5 = new SimpleTerm(more, middle);
+		t6 = new SimpleTerm(middle, less);
+		t7 = new SimpleTerm(middle, more);
 	}
 	
-
 	/**
 	 * Confirm the semantics of reference and object equality.
 	 * 
@@ -58,7 +86,16 @@ public class TermUnitTest {
 	 */
 	@Test
 	public void confirmEquals() {
-		//TODO test equality methods
+		SoftAssert eq = new SoftAssert();
+		
+		eq.assertSame(t1, t2, "References to same instance should be same");
+		eq.assertEquals(t1, t2, "References to same instance should be equal");
+		eq.assertEquals(t1, t3, "Instances with same uniqueness fields should be equal");
+		
+		eq.assertNotEquals(t1, t4, "Instances with varying universities should not be equal");
+		eq.assertNotEquals(t1, t6, "Instances with varying term identifier should not be equal");
+		
+		eq.assertAll();
 	}
 	
 	/**
@@ -73,16 +110,58 @@ public class TermUnitTest {
 	 */
 	@Test
 	public void confirmHashCode() {
-		//TODO test hashCode semantics
+		SoftAssert hc = new SoftAssert();
+		
+		hc.assertEquals(t1, t2, "References to same instance should have same hashcode");
+		hc.assertEquals(t1, t3, "Equal instances should have same hashcode");
+		
+		//ensure that our sample dataset, which has variety in its field content,
+		//has some variation in its hashcode. No variation in hash would be bad
+		//this is not sufficient on its own, a good hash should have a uniform, 
+		//non-clustering distribution
+		boolean variety = 
+				t1.hashCode() == t4.hashCode() &&
+				t1.hashCode() == t5.hashCode() &&
+				t1.hashCode() == t6.hashCode() &&
+				t1.hashCode() == t7.hashCode()
+		;
+		hc.assertFalse(variety, "Hashcode should return a variety of values for instances with varying uniqueness fields");
+		
+		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
+		
+		hc.assertAll();
 	}
 	
-
 	/**
 	 * Confirm the semantics of compareTo is consistent with equals() 
 	 * and has appropriate object semantics. 
 	 */
 	@Test
 	public void confirmCompareTo() {
-		//TODO test compareTo semantics
+		SoftAssert ct = new SoftAssert();
+		
+		ct.assertEquals(t1.compareTo(t2), 0, "References to same instance should be equal");
+		ct.assertEquals(t2.compareTo(t1), 0, "References to same instance should be equal, regardless of comparison direction");
+		ct.assertEquals(t1.compareTo(t3), 0, "Instances with same fields should be equal");
+		ct.assertEquals(t2.compareTo(t1), 0, "Instances with same fields should be equal, regardless of comparison direction");
+		
+		//check university ordering and reversability
+		ct.assertEquals(Math.signum(t1.compareTo(t4)), 1.0f, "Positive result expected for instance with lesser university");
+		ct.assertEquals(Math.signum(t4.compareTo(t1)), -1.0f, "Negative result expected for instance with greater university");
+		ct.assertEquals(Math.signum(t1.compareTo(t5)), -1.0f, "Negative result expected for instance with greater university");
+		ct.assertEquals(Math.signum(t5.compareTo(t1)), 1.0f, "Positive result expected for instance with lesser university");
+		
+		//check id ordering and reversability 
+		ct.assertEquals(Math.signum(t1.compareTo(t6)), 1.0f, "Positive result expected for instance with lesser term id");
+		ct.assertEquals(Math.signum(t6.compareTo(t1)), -1.0f, "Negative result expected for instance with greater term id");
+		ct.assertEquals(Math.signum(t1.compareTo(t7)), -1.0f, "Negative result expected for instance with greater term id");
+		ct.assertEquals(Math.signum(t7.compareTo(t1)), 1.0f, "Positive result expected for instance with lesser term id");
+		
+		//check transitivity on university and id
+		ct.assertEquals(Math.signum(t4.compareTo(t1)), Math.signum(t1.compareTo(t5)), "Transitivity expected for instances varying on university");
+		ct.assertEquals(Math.signum(t6.compareTo(t1)), Math.signum(t1.compareTo(t7)), "Transitivity expected for instances varying on term id");
+		
+		
+		ct.assertAll();
 	}
 }

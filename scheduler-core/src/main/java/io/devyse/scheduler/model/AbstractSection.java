@@ -1,0 +1,166 @@
+package io.devyse.scheduler.model;
+
+/**
+ * Provide the basic functionality and implementation of
+ * the Section interface
+ *
+ * @author mreinhold
+ *
+ */
+public abstract class AbstractSection implements Section {
+	
+	/**
+	 * The course request number, registration number
+	 */
+	private String crn;
+	
+	/**
+	 * The course identifier
+	 */
+	private String courseId;
+	
+	/**
+	 * The section description (course description)
+	 */
+	private String description;
+	
+	/**
+	 * The common section name
+	 */
+	private String name;
+	
+	/**
+	 * The unique section identifier
+	 */
+	private String sectionId;
+	
+	/**
+	 * The registration term for this section
+	 */
+	private Term term;
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getCRN()
+	 */
+	@Override
+	public String getCRN() {
+		return this.crn;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getCourseId()
+	 */
+	@Override
+	public String getCourseId() {
+		return this.courseId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		return this.description;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getName()
+	 */
+	@Override
+	public String getName() {
+		return this.name;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getSectionId()
+	 */
+	@Override
+	public String getSectionId() {
+		return this.sectionId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.devyse.scheduler.model.Section#getTerm()
+	 */
+	@Override
+	public Term getTerm() {
+		return this.term;
+	}
+	
+	/**
+	 * @param crn the crn to set
+	 */
+	protected void setCrn(String crn) {
+		this.crn = crn;
+	}
+
+	/**
+	 * @param courseId the courseId to set
+	 */
+	protected void setCourseId(String courseId) {
+		this.courseId = courseId;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	protected void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	protected void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param sectionId the sectionId to set
+	 */
+	protected void setSectionId(String sectionId) {
+		this.sectionId = sectionId;
+	}
+
+	/**
+	 * @param term the term to set
+	 */
+	protected void setTerm(Term term) {
+		this.term = term;
+	}
+
+	/**
+	 * Create a new AbstractSection for the specified term using the
+	 * provided course request number
+	 * 
+	 * @param term the term in which the section is available
+	 * @param crn the registration number for the course
+	 * @param courseId the course identifier
+	 * @param sectionId the section identifier
+	 */
+	public AbstractSection(Term term, String crn, String courseId, String sectionId){
+		super();
+		
+		this.setTerm(term);
+		this.setCrn(crn);
+		this.setCourseId(courseId);
+		this.setSectionId(sectionId);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return this.getHashCode();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Section){ return this.equals((Section)obj); }
+		else return false;
+	}
+}

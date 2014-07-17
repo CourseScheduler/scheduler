@@ -141,56 +141,56 @@ public abstract class AbstractMeeting implements Meeting {
 	/**
 	 * @param dateTimeBlock the timeBlock to set
 	 */
-	private void setDateTimeBlock(DateTimeBlock dateTimeBlock) {
+	protected void setDateTimeBlock(DateTimeBlock dateTimeBlock) {
 		this.dateTimeBlock = dateTimeBlock;
 	}
 
 	/**
 	 * @param campus the campus to set
 	 */
-	private void setCampus(String campus) {
+	protected void setCampus(String campus) {
 		this.campus = campus;
 	}
 
 	/**
 	 * @param building the building to set
 	 */
-	private void setBuilding(String building) {
+	protected void setBuilding(String building) {
 		this.building = building;
 	}
 
 	/**
 	 * @param room the room to set
 	 */
-	private void setRoom(String room) {
+	protected void setRoom(String room) {
 		this.room = room;
 	}
 
 	/**
 	 * @param meetingType the meetingType to set
 	 */
-	private void setMeetingType(String meetingType) {
+	protected void setMeetingType(String meetingType) {
 		this.meetingType = meetingType;
 	}
 
 	/**
 	 * @param scheduleType the scheduleType to set
 	 */
-	private void setScheduleType(String scheduleType) {
+	protected void setScheduleType(String scheduleType) {
 		this.scheduleType = scheduleType;
 	}
 
 	/**
 	 * @param instructors the instructors to set
 	 */
-	private void setInstructors(Set<String> instructors) {
+	protected void setInstructors(Set<String> instructors) {
 		this.instructors = instructors;
 	}
 
 	/**
 	 * @param section the section to set
 	 */
-	private void setSection(Section section) {
+	protected void setSection(Section section) {
 		this.section = section;
 	}
 

@@ -159,8 +159,8 @@ public class MeetingUnitTest {
 		SoftAssert hc = new SoftAssert();
 		
 		//hashcode semantics should be consistent with equals()		
-		hc.assertEquals(m0.hashCode(), m0b.hashCode(), "");
-		hc.assertEquals(m0.hashCode(), m1.hashCode(), "");
+		hc.assertEquals(m0.hashCode(), m0b.hashCode(), "References to same instance should have same hashcode");
+		hc.assertEquals(m0.hashCode(), m1.hashCode(), "Equal instances should have same hashcode");
 		
 		//ensure that our sample dataset, which has variety in its field content,
 		//has some variation in its hashcode. No variation in hash would be bad
@@ -217,8 +217,10 @@ public class MeetingUnitTest {
 	
 	/**
 	 * A stub of the Section interface for use when testing the Meeting interface.
-	 * We need a stub as a basic implementation can't be tested unless the Meeting
-	 * base functionality works as expected.
+	 * 
+	 * We need a section stub as the basic implementation of Meeting can't be tested
+	 * without a Section, however the proper functioning of Section depends on the
+	 * base functionality of Meeting working as expected.
 	 * 
 	 * Just uses a "section id" to differentiate between sections. 
 	 *
@@ -296,7 +298,7 @@ public class MeetingUnitTest {
 		 * @see io.devyse.scheduler.model.Section#getCourseID()
 		 */
 		@Override
-		public String getCourseID() {
+		public String getCourseId() {
 			return "";
 		}
 
@@ -320,7 +322,7 @@ public class MeetingUnitTest {
 		 * @see io.devyse.scheduler.model.Section#getSectionID()
 		 */
 		@Override
-		public String getSectionID() {
+		public String getSectionId() {
 			return "";
 		}
 

@@ -164,38 +164,38 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	/**
 	 * @param dayOfWeek the dayOfWeek to set
 	 */
-	private void setDayOfWeek(DayOfWeek day) {
+	protected void setDayOfWeek(DayOfWeek day) {
 		this.dayOfWeek = day;
 	}
 
 	/**
 	 * @param start the startTime to set
 	 */
-	private void setStartTime(OffsetTime start) {
+	protected void setStartTime(OffsetTime start) {
 		this.startTime = start;
 	}
 
 	/**
 	 * @param end the endTime to set
 	 */
-	private void setEndTime(OffsetTime end) {
+	protected void setEndTime(OffsetTime end) {
 		this.endTime = end;
 	}
 	
 	/**
 	 * @param start the startDate to set
 	 */
-	private void setStartDate(LocalDate start) {
+	protected void setStartDate(LocalDate start) {
 		this.startDate = start;
 	}
 	
 	/**
 	 * @param end the endDate to set
 	 */
-	private void setEndDate(LocalDate end) {
+	protected void setEndDate(LocalDate end) {
 		this.endDate = end;
 	}
-
+	
 	/**
 	 * Create a new AbstractDateTimeBlock with the appropriate day of week, start time,
 	 * end time, and timezone.
@@ -207,7 +207,7 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	 * @param startDate the start date 
 	 * @param endDate the end date
 	 */
-	protected AbstractDateTimeBlock(DayOfWeek dow, LocalTime startTime, LocalTime endTime, ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
+	public AbstractDateTimeBlock(DayOfWeek dow, LocalTime startTime, LocalTime endTime, ZoneOffset zone, LocalDate startDate, LocalDate endDate) {
 		super();
 		
 		this.setDayOfWeek(dow);
