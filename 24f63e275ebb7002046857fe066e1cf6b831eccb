@@ -1,0 +1,14 @@
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-17_19-13-10
+Number: 1
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/1/
+Tag: jenkins-scheduler-1
+Duration: ${BUILDDURATION}
+Result: ${BUILDRESULT}
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/feature/datamodel
+Commit: {24f63e275ebb7002046857fe066e1cf6b831eccb}
