@@ -161,7 +161,6 @@ public class TermUnitTest {
 		ct.assertEquals(Math.signum(t4.compareTo(t1)), Math.signum(t1.compareTo(t5)), "Transitivity expected for instances varying on university");
 		ct.assertEquals(Math.signum(t6.compareTo(t1)), Math.signum(t1.compareTo(t7)), "Transitivity expected for instances varying on term id");
 		
-		
 		ct.assertAll();
 	}
 }

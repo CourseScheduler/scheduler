@@ -187,7 +187,6 @@ public class SectionUnitTest {
 		ct.assertEquals(Math.signum(s8.compareTo(s1)), Math.signum(s1.compareTo(s9)), "Transitivity expected for instances varying on course id");
 		ct.assertEquals(Math.signum(s10.compareTo(s1)), Math.signum(s1.compareTo(s11)), "Transitivity expected for instances varying on section id");
 		
-		
 		ct.assertAll();
 	}
 }
