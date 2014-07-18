@@ -23,6 +23,13 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -39,6 +46,28 @@ import org.testng.asserts.SoftAssert;
 		dependsOnGroups = {}
 )
 public class TermUnitTest {
+
+	/**
+	 * PRNG seed for the hash code generator used in the hashcode quality test
+	 */
+	private static final long HASH_CODE_QUALITY_CHECK_GENERATOR_SEED = 1024L;
+
+	/**
+	 * Number of DateTimeBlock objects to generate in testing the hashcode quality
+	 */
+	private static final int HASH_CODE_QUALITY_CHECK_SIZE = 1000000;
+
+	/**
+	 * Maximum number of per hashcode collisions. If any hashcode occurs more than
+	 * the number specified here, the test will fail
+	 */
+	private static final int HASH_CODE_QUALITY_CHECK_MAX_COLLISIONS = 5;
+
+	/**
+	 * Maximum number of average hashcode collisions. If the average number of collisions
+	 * is greater than the number specified here, the test will fail
+	 */
+	private static final double HASH_CODE_QUALITY_CHECK_AVG_COLLISIONS = 3;
 	
 	/**
 	 * Simple values for comparisons
@@ -128,9 +157,55 @@ public class TermUnitTest {
 		;
 		hc.assertFalse(variety, "Hashcode should return a variety of values for instances with varying uniqueness fields");
 		
-		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
-		
 		hc.assertAll();
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality(){
+		Random generator = new Random(HASH_CODE_QUALITY_CHECK_GENERATOR_SEED);
+		Map<Integer, Integer> hashCodes = new HashMap<Integer, Integer>();
+		Set<Term> instances = new HashSet<Term>();
+		
+		for(int bottom = 0; bottom < HASH_CODE_QUALITY_CHECK_SIZE; bottom++){
+			Term block = generateTerm(generator);
+			
+			if(!instances.contains(block)){
+				Integer hashCode = Integer.valueOf(block.hashCode());
+				Integer occurrences = hashCodes.get(hashCode);
+				if(occurrences == null){
+					occurrences = 0;
+				}
+				hashCodes.put(hashCode, occurrences+1);
+				instances.add(block);
+			}
+		}
+		
+		Collection<Integer> occurrenceCount = hashCodes.values();
+		int maxCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).max().getAsInt();
+		double averageCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).average().getAsDouble();
+		
+		SoftAssert hcq = new SoftAssert();
+		
+		hcq.assertTrue(maxCollisions < HASH_CODE_QUALITY_CHECK_MAX_COLLISIONS, "");
+		hcq.assertTrue(averageCollisions < HASH_CODE_QUALITY_CHECK_AVG_COLLISIONS, "");
+		
+		hcq.assertAll();
+	}
+	
+	/**
+	 * Generate a Term based on the current state of a Random
+	 *
+	 * @param generator a Random for use in building the Term
+	 * @return the next Term
+	 */
+	public Term generateTerm(Random generator){
+		return new SimpleTerm(Long.toHexString(generator.nextLong()), Long.toHexString(generator.nextLong()));
 	}
 	
 	/**
