@@ -141,7 +141,7 @@ public class TermUnitTest {
 	 * a specified value.
 	 */
 	@Test
-	public void confirmHashCodeQuality(){
+	public void confirmHashCodeQuality_RandomData(){
 		HashCodeQualityHelper.confirmHashCodeQuality( 
 				(Random r) -> {return TermUnitTest.generateTerm(r);}
 		);

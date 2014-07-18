@@ -90,8 +90,8 @@ public class HashCodeQualityHelper {
 		
 		SoftAssert hcq = new SoftAssert();
 		
-		hcq.assertTrue(maxCollisions < maxHashCollisionLimit, "");
-		hcq.assertTrue(averageCollisions < avgHashCollisionLimit, "");
+		hcq.assertTrue(maxCollisions < maxHashCollisionLimit, "Maximum number of collisions for individual hashcode exceeded allowed value");
+		hcq.assertTrue(averageCollisions < avgHashCollisionLimit, "Average number of collisions per hashcode exceeded allowed value");
 		
 		hcq.assertAll();
 	}

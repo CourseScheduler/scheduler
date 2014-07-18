@@ -186,7 +186,7 @@ public class MeetingUnitTest {
 	 * a specified value.
 	 */
 	@Test
-	public void confirmHashCodeQuality(){
+	public void confirmHashCodeQuality_RandomData(){
 		HashCodeQualityHelper.confirmHashCodeQuality( 
 				(Random r) -> {return MeetingUnitTest.generateMeeting(r);}
 		);

@@ -154,10 +154,23 @@ public class SectionUnitTest {
 	 * a specified value.
 	 */
 	@Test
-	public void confirmHashCodeQuality(){
+	public void confirmHashCodeQuality_RandomData(){
 		HashCodeQualityHelper.confirmHashCodeQuality( 
 				(Random r) -> {return SectionUnitTest.generateSection(r);}
 		);
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RealisticData(){
+		HashCodeQualityHelper.confirmHashCodeQuality(Arrays.asList(
+				s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11
+		));
 	}
 	
 	/**
@@ -173,19 +186,6 @@ public class SectionUnitTest {
 				Long.toHexString(generator.nextLong()), 
 				Long.toHexString(generator.nextLong())
 		);
-	}
-	
-	/**
-	 * Confirm the quality of the hashCode method meets some minimum standards - 
-	 * will avoid some too many instances hashing to the same value for a single
-	 * hash as well as that the average number of collisions per hash is under
-	 * a specified value.
-	 */
-	@Test
-	public void confirmHashCodeQuality_RealisticData(){
-		HashCodeQualityHelper.confirmHashCodeQuality(Arrays.asList(
-				s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11
-		));
 	}
 
 	/**
