@@ -1,0 +1,12 @@
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-18_21-01-38
+Number: 5
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/5/
+Tag: jenkins-scheduler-5
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/develop
+Commit: 346be7a61e30a71bcdcea07143add1916a279477
