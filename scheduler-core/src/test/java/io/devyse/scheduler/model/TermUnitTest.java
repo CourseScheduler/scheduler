@@ -23,6 +23,9 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -91,7 +94,8 @@ public class TermUnitTest {
 		eq.assertSame(t1, t2, "References to same instance should be same");
 		eq.assertEquals(t1, t2, "References to same instance should be equal");
 		eq.assertEquals(t1, t3, "Instances with same uniqueness fields should be equal");
-		
+
+		eq.assertNotEquals(t1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(t1, t4, "Instances with varying universities should not be equal");
 		eq.assertNotEquals(t1, t6, "Instances with varying term identifier should not be equal");
 		
@@ -127,9 +131,43 @@ public class TermUnitTest {
 		;
 		hc.assertFalse(variety, "Hashcode should return a variety of values for instances with varying uniqueness fields");
 		
-		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
-		
 		hc.assertAll();
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RandomData(){
+		HashCodeQualityHelper.confirmHashCodeQuality( 
+				(Random r) -> {return TermUnitTest.generateTerm(r);}
+		);
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RealisticData(){
+		HashCodeQualityHelper.confirmHashCodeQuality(Arrays.asList(
+				t1, t2, t3, t4, t5, t6, t7
+		));
+	}
+	
+	/**
+	 * Generate a Term based on the current state of a Random
+	 *
+	 * @param generator a Random for use in building the Term
+	 * @return the next Term
+	 */
+	public static Term generateTerm(Random generator){
+		return new SimpleTerm(Long.toHexString(generator.nextLong()), Long.toHexString(generator.nextLong()));
 	}
 	
 	/**
@@ -160,7 +198,6 @@ public class TermUnitTest {
 		//check transitivity on university and id
 		ct.assertEquals(Math.signum(t4.compareTo(t1)), Math.signum(t1.compareTo(t5)), "Transitivity expected for instances varying on university");
 		ct.assertEquals(Math.signum(t6.compareTo(t1)), Math.signum(t1.compareTo(t7)), "Transitivity expected for instances varying on term id");
-		
 		
 		ct.assertAll();
 	}

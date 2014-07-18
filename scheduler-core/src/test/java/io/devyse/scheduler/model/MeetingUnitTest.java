@@ -27,7 +27,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -73,7 +75,6 @@ public class MeetingUnitTest {
 	 * 		m5 = s3 & t1
 	 */
 	Meeting m0, m0b, m1, m2, m3, m4, m5;
-	
 	
 	/**
 	 * Prepare the test instances and necessary stubs for use in the tests
@@ -138,6 +139,7 @@ public class MeetingUnitTest {
 		eq.assertEquals(m0, m1, "Instances with same uniqueness fields should be equal");
 		
 		//Meeting is not equal under any other condition
+		eq.assertNotEquals(m1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(m1, m2, "Instances with varying date time blocks should not be equal");
 		eq.assertNotEquals(m1, m4, "Instances with varying sections should not be equal");
 		
@@ -158,7 +160,7 @@ public class MeetingUnitTest {
 	public void confirmHashCode() {
 		SoftAssert hc = new SoftAssert();
 		
-		//hashcode semantics should be consistent with equals()		
+		//hashcode semantics should be consistent with equals()
 		hc.assertEquals(m0.hashCode(), m0b.hashCode(), "References to same instance should have same hashcode");
 		hc.assertEquals(m0.hashCode(), m1.hashCode(), "Equal instances should have same hashcode");
 		
@@ -174,9 +176,46 @@ public class MeetingUnitTest {
 		;
 		hc.assertFalse(variety, "Hashcode should return a variety of values for instance with varying uniqueness fields");
 		
-		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
-		
 		hc.assertAll();
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RandomData(){
+		HashCodeQualityHelper.confirmHashCodeQuality( 
+				(Random r) -> {return MeetingUnitTest.generateMeeting(r);}
+		);
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RealisticData(){
+		HashCodeQualityHelper.confirmHashCodeQuality(Arrays.asList(
+				m0, m0b, m1, m2, m3, m4, m5
+		));
+	}
+	
+	/**
+	 * Generate a Term based on the current state of a Random
+	 *
+	 * @param generator a Random for use in building the Term
+	 * @return the next Term
+	 */
+	public static Meeting generateMeeting(Random generator){
+		return new SimpleMeeting(
+				new SectionStub(generator.nextInt(100)), 
+				DateTimeBlockUnitTest.generateDateTimeBlock(generator)
+		);
 	}
 	
 	/**

@@ -23,6 +23,9 @@
  */
 package io.devyse.scheduler.model;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -104,7 +107,8 @@ public class SectionUnitTest {
 		eq.assertSame(s1, s2, "References to same instance should be same");
 		eq.assertEquals(s1, s2, "References to same instance should be equal");
 		eq.assertEquals(s1, s3, "Instances with same uniqueness fields should be equal");
-		
+
+		eq.assertNotEquals(s1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(s1, s4, "Instances with varying term should not be equal");
 		eq.assertNotEquals(s1, s6, "Instances with varying section identifier should not be equal");
 		
@@ -139,10 +143,49 @@ public class SectionUnitTest {
 				s1.hashCode() == s7.hashCode()
 		;
 		hc.assertFalse(variety, "Hashcode should return a variety of values for instances with varying uniqueness fields");
-		
-		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
-		
+				
 		hc.assertAll();
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RandomData(){
+		HashCodeQualityHelper.confirmHashCodeQuality( 
+				(Random r) -> {return SectionUnitTest.generateSection(r);}
+		);
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality_RealisticData(){
+		HashCodeQualityHelper.confirmHashCodeQuality(Arrays.asList(
+				s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11
+		));
+	}
+	
+	/**
+	 * Generate a Term based on the current state of a Random
+	 *
+	 * @param generator a Random for use in building the Term
+	 * @return the next Term
+	 */
+	public static Section generateSection(Random generator){
+		return new SimpleSection(
+				TermUnitTest.generateTerm(generator),
+				Long.toHexString(generator.nextLong()),
+				Long.toHexString(generator.nextLong()), 
+				Long.toHexString(generator.nextLong())
+		);
 	}
 
 	/**
@@ -186,7 +229,6 @@ public class SectionUnitTest {
 		ct.assertEquals(Math.signum(s4.compareTo(s1)), Math.signum(s1.compareTo(s5)), "Transitivity expected for instances varying on term");
 		ct.assertEquals(Math.signum(s8.compareTo(s1)), Math.signum(s1.compareTo(s9)), "Transitivity expected for instances varying on course id");
 		ct.assertEquals(Math.signum(s10.compareTo(s1)), Math.signum(s1.compareTo(s11)), "Transitivity expected for instances varying on section id");
-		
 		
 		ct.assertAll();
 	}
