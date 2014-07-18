@@ -32,6 +32,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Represent a specific time block for a course meeting. Contains
@@ -243,4 +244,5 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 			this.getEndDate()
 		);
 	}
+
 }
