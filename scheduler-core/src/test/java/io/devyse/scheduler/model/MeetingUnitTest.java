@@ -138,6 +138,7 @@ public class MeetingUnitTest {
 		eq.assertEquals(m0, m1, "Instances with same uniqueness fields should be equal");
 		
 		//Meeting is not equal under any other condition
+		eq.assertNotEquals(m1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(m1, m2, "Instances with varying date time blocks should not be equal");
 		eq.assertNotEquals(m1, m4, "Instances with varying sections should not be equal");
 		
@@ -158,7 +159,7 @@ public class MeetingUnitTest {
 	public void confirmHashCode() {
 		SoftAssert hc = new SoftAssert();
 		
-		//hashcode semantics should be consistent with equals()		
+		//hashcode semantics should be consistent with equals()
 		hc.assertEquals(m0.hashCode(), m0b.hashCode(), "References to same instance should have same hashcode");
 		hc.assertEquals(m0.hashCode(), m1.hashCode(), "Equal instances should have same hashcode");
 		

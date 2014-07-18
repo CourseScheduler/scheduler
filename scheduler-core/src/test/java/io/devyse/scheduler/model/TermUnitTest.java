@@ -91,7 +91,8 @@ public class TermUnitTest {
 		eq.assertSame(t1, t2, "References to same instance should be same");
 		eq.assertEquals(t1, t2, "References to same instance should be equal");
 		eq.assertEquals(t1, t3, "Instances with same uniqueness fields should be equal");
-		
+
+		eq.assertNotEquals(t1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(t1, t4, "Instances with varying universities should not be equal");
 		eq.assertNotEquals(t1, t6, "Instances with varying term identifier should not be equal");
 		

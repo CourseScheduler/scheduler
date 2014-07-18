@@ -26,7 +26,14 @@ package io.devyse.scheduler.model;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -43,6 +50,28 @@ import org.testng.asserts.SoftAssert;
  */
 @Test(groups = {"unit","interface","DateTimeBlock.basic"})
 public class DateTimeBlockUnitTest {
+	
+	/**
+	 * PRNG seed for the hash code generator used in the hashcode quality test
+	 */
+	private static final long HASH_CODE_QUALITY_CHECK_GENERATOR_SEED = 1024L;
+
+	/**
+	 * Number of DateTimeBlock objects to generate in testing the hashcode quality
+	 */
+	private static final int HASH_CODE_QUALITY_CHECK_SIZE = 1000000;
+
+	/**
+	 * Maximum number of per hashcode collisions. If any hashcode occurs more than
+	 * the number specified here, the test will fail
+	 */
+	private static final int HASH_CODE_QUALITY_CHECK_MAX_COLLISIONS = 5;
+
+	/**
+	 * Maximum number of average hashcode collisions. If the average number of collisions
+	 * is greater than the number specified here, the test will fail
+	 */
+	private static final double HASH_CODE_QUALITY_CHECK_AVG_COLLISIONS = 3;
 	
 	private static final long TEST_DURATION = 60;
 	private static final long TEST_LENGTH = (long)(1.5*TEST_DURATION);
@@ -93,7 +122,7 @@ public class DateTimeBlockUnitTest {
 	 * 		i3 has same field data as a but occurring in a date range that contains a
 	 */
 	private SimpleDateTimeBlock a1, a2, a3, a4, a5, b1, b2, c1, c2, d1, d2, e1, e2, f1, f2, g1, g2, h1, i1, i2, i3;
-	
+		
 	/**
 	 * Prepare the test instances for use in the tests.
 	 * 
@@ -151,6 +180,8 @@ public class DateTimeBlockUnitTest {
 		eq.assertSame(a1, a2, "References to same instance should be the same");
 		eq.assertEquals(a1, a2, "References to same instance should be equal");
 		eq.assertEquals(a1, a3, "Instances with same uniqueness fields should be equal");
+		
+		eq.assertNotEquals(a1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(a1, a4, "Instances with UTC equivalent times in different zones should not be equal");
 		eq.assertNotEquals(a1, b1, "Instances with varying days of week should not be equal");
 		eq.assertNotEquals(a1, c1, "Instances with varying start times should not be equal");
@@ -199,10 +230,66 @@ public class DateTimeBlockUnitTest {
 				a1Code == g2.hashCode()
 		;
 		hc.assertFalse(variety, "Hashcode should return a variety of values for instance with varying uniqueness fields");
-		
-		//TODO alternative mechanisms to identify bad hashes (non-uniformity or clustering behavior)
-		
+				
 		hc.assertAll();
+	}
+	
+	/**
+	 * Confirm the quality of the hashCode method meets some minimum standards - 
+	 * will avoid some too many instances hashing to the same value for a single
+	 * hash as well as that the average number of collisions per hash is under
+	 * a specified value.
+	 */
+	@Test
+	public void confirmHashCodeQuality(){
+		Random generator = new Random(HASH_CODE_QUALITY_CHECK_GENERATOR_SEED);
+		Map<Integer, Integer> hashCodes = new HashMap<Integer, Integer>();
+		Set<DateTimeBlock> instances = new HashSet<DateTimeBlock>();
+		
+		for(int bottom = 0; bottom < HASH_CODE_QUALITY_CHECK_SIZE; bottom++){
+			DateTimeBlock block = generateDateTimeBlock(generator);
+			
+			if(!instances.contains(block)){
+				Integer hashCode = Integer.valueOf(block.hashCode());
+				Integer occurrences = hashCodes.get(hashCode);
+				if(occurrences == null){
+					occurrences = 0;
+				}
+				hashCodes.put(hashCode, occurrences+1);
+				instances.add(block);
+			}
+		}
+		
+		Collection<Integer> occurrenceCount = hashCodes.values();
+		int maxCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).max().getAsInt();
+		double averageCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).average().getAsDouble();
+		
+		SoftAssert hcq = new SoftAssert();
+		
+		hcq.assertTrue(maxCollisions < HASH_CODE_QUALITY_CHECK_MAX_COLLISIONS, "");
+		hcq.assertTrue(averageCollisions < HASH_CODE_QUALITY_CHECK_AVG_COLLISIONS, "");
+		
+		hcq.assertAll();
+	}
+	
+	/**
+	 * Generate a DateTimeBlock based on the current state of a Random
+	 *
+	 * @param generator a Random for use in building the DateTimeBlocks
+	 * @return the next DateTimeBlock
+	 */
+	public DateTimeBlock generateDateTimeBlock(Random generator){
+		return new SimpleDateTimeBlock(
+				DayOfWeek.of(Math.abs(generator.nextInt() % DayOfWeek.values().length)+1),
+				OffsetTime.of(Math.abs(generator.nextInt(24)), 
+						Math.abs(generator.nextInt(60)), Math.abs(generator.nextInt(60)), 
+						Math.abs(generator.nextInt(1000000000)), ZoneOffset.ofHours(generator.nextInt(19))),
+				OffsetTime.of(Math.abs(generator.nextInt(24)), 
+						Math.abs(generator.nextInt(60)), Math.abs(generator.nextInt(60)), 
+						Math.abs(generator.nextInt(1000000000)), ZoneOffset.ofHours(generator.nextInt(19))),
+				LocalDate.ofEpochDay(Math.abs(generator.nextInt(1000000000))),
+				LocalDate.ofEpochDay(Math.abs(generator.nextInt(1000000000)))
+		);
 	}
 	
 	/**

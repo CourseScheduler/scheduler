@@ -104,7 +104,8 @@ public class SectionUnitTest {
 		eq.assertSame(s1, s2, "References to same instance should be same");
 		eq.assertEquals(s1, s2, "References to same instance should be equal");
 		eq.assertEquals(s1, s3, "Instances with same uniqueness fields should be equal");
-		
+
+		eq.assertNotEquals(s1, null, "Non-null instance should not be equal to null");		
 		eq.assertNotEquals(s1, s4, "Instances with varying term should not be equal");
 		eq.assertNotEquals(s1, s6, "Instances with varying section identifier should not be equal");
 		
