@@ -1,0 +1,12 @@
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-18_20-28-47
+Number: 4
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/4/
+Tag: jenkins-scheduler-4
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/feature/datamodel
+Commit: 397d8bf9e882c225984894e0d322d3a825e63747
