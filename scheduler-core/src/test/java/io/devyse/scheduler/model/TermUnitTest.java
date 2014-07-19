@@ -39,7 +39,7 @@ import org.testng.asserts.SoftAssert;
  *
  */
 @Test(	groups = {"unit","interface","Term.basic"}, 
-		dependsOnGroups = {}
+		dependsOnGroups = {"University.basic"}
 )
 public class TermUnitTest {
 	
