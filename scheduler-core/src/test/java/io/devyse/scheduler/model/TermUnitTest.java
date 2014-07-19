@@ -51,6 +51,11 @@ public class TermUnitTest {
 	private static final String more = "9";
 	
 	/**
+	 * Universities for use in testing
+	 */
+	private University lesserUni, middleUni, greaterUni;
+	
+	/**
 	 * Term instances for testing basic function. Relationship is as follows:
 	 * 
 	 * 		instance = university, id
@@ -71,13 +76,17 @@ public class TermUnitTest {
 	 */
 	@BeforeClass
 	public void setup() {
-		t1 = new SimpleTerm(middle, middle);
+		lesserUni = new SimpleUniversity(less);
+		middleUni = new SimpleUniversity(middle);
+		greaterUni = new SimpleUniversity(more);
+		
+		t1 = new SimpleTerm(middleUni, middle);
 		t2 = t1;
-		t3 = new SimpleTerm(middle, middle);
-		t4 = new SimpleTerm(less, middle);
-		t5 = new SimpleTerm(more, middle);
-		t6 = new SimpleTerm(middle, less);
-		t7 = new SimpleTerm(middle, more);
+		t3 = new SimpleTerm(middleUni, middle);
+		t4 = new SimpleTerm(lesserUni, middle);
+		t5 = new SimpleTerm(greaterUni, middle);
+		t6 = new SimpleTerm(middleUni, less);
+		t7 = new SimpleTerm(middleUni, more);
 	}
 	
 	/**
@@ -167,7 +176,10 @@ public class TermUnitTest {
 	 * @return the next Term
 	 */
 	public static Term generateTerm(Random generator){
-		return new SimpleTerm(Long.toHexString(generator.nextLong()), Long.toHexString(generator.nextLong()));
+		return new SimpleTerm(
+					new SimpleUniversity(Long.toHexString(generator.nextLong())),
+					Long.toHexString(generator.nextLong())
+		);
 	}
 	
 	/**

@@ -47,9 +47,9 @@ public class SectionUnitTest {
 	private static final String less = "1";
 	private static final String middle = "5";
 	private static final String more = "9";
-	private static final Term lesserTerm = new SimpleTerm("1", "1");
-	private static final Term middleTerm = new SimpleTerm("5", "5");
-	private static final Term greaterTerm = new SimpleTerm("9", "9");
+	private static final Term lesserTerm = new SimpleTerm(new SimpleUniversity("1"), "1");
+	private static final Term middleTerm = new SimpleTerm(new SimpleUniversity("5"), "5");
+	private static final Term greaterTerm = new SimpleTerm(new SimpleUniversity("9"), "9");
 	
 	/**
 	 * Sections for use in testing base functions

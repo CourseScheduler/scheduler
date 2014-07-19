@@ -35,7 +35,7 @@ public abstract class AbstractTerm implements Term {
 	/**
 	 * The university for which this term exists
 	 */
-	private String university;
+	private University university;
 	
 	/**
 	 * The unique term identifier for the university
@@ -51,7 +51,7 @@ public abstract class AbstractTerm implements Term {
 	 * @see io.devyse.scheduler.model.Term#getUniversity()
 	 */
 	@Override
-	public String getUniversity() {
+	public University getUniversity() {
 		return this.university;
 	}
 	
@@ -74,7 +74,7 @@ public abstract class AbstractTerm implements Term {
 	/**
 	 * @param university the university to set
 	 */
-	protected void setUniversity(String university) {
+	protected void setUniversity(University university) {
 		this.university = university;
 	}
 
@@ -99,7 +99,7 @@ public abstract class AbstractTerm implements Term {
 	 * @param university the parent university of the term
 	 * @param id the unique identifier of the term
 	 */
-	public AbstractTerm(String university, String id){
+	public AbstractTerm(University university, String id){
 		super();
 		
 		this.setUniversity(university);

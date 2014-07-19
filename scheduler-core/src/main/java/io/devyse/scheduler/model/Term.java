@@ -40,7 +40,7 @@ public interface Term extends Comparable<Term> {
 	 *
 	 * @return the university for this term
 	 */
-	public String getUniversity();
+	public University getUniversity();
 	
 	/**
 	 * The unique term identifier for this term as defined by

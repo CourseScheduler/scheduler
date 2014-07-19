@@ -39,7 +39,7 @@ public class SimpleTerm extends AbstractTerm {
 	 * @param university the parent university
 	 * @param id the unique identifier
 	 */
-	public SimpleTerm(String university, String id) {
+	public SimpleTerm(University university, String id) {
 		super(university, id);
 		
 		//TODO ensure that the AbstractTerm is fully initialized?
