@@ -1,0 +1,12 @@
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-19_03-26-19
+Number: 6
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/6/
+Tag: jenkins-scheduler-6
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/feature/datamodel
+Commit: 743a3a3a78730b02efeb9cde322be37b931baac9
