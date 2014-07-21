@@ -10,3 +10,16 @@ Git Commit Information
 Repository: git@github.com:CourseScheduler/scheduler.git
 Branch: origin/feature/datamodel
 Commit: 2de2a6247cf7b55fdb96af5ea6f74a6383028ee0
+
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-21_19-27-12
+Number: 9
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/9/
+Tag: jenkins-scheduler-9
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/feature/datamodel
+Commit: 2de2a6247cf7b55fdb96af5ea6f74a6383028ee0
