@@ -135,15 +135,7 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();		//TODO add date range append
-		
-		sb.append(this.getDayOfWeek());
-		sb.append(" ");
-		sb.append(this.getStartTime());
-		sb.append("-");						//TODO what should this string look like? 
-		sb.append(this.getEndTime());
-		
-		return sb.toString();
+		return DateTimeBlock.toString(this);
 	}
 	
 	/* (non-Javadoc)
@@ -157,6 +149,10 @@ public abstract class AbstractDateTimeBlock implements DateTimeBlock{
 		sb.append(this.getStartTime().format(formatter));
 		sb.append("-");						//TODO what should this string look like
 		sb.append(this.getEndTime().format(formatter));
+		sb.append("");
+		sb.append(this.getStartDate().format(formatter));
+		sb.append(" ");
+		sb.append(this.getEndDate().format(formatter));
 		
 		return sb.toString();
 	}

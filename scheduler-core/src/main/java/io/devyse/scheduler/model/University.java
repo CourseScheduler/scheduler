@@ -88,4 +88,11 @@ public interface University extends Comparable<University> {
 	public default int compareTo(University other) {
 		return this.getName().compareTo(other.getName());
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public static String toString(University uni){
+		return uni.getName();
+	}
 }

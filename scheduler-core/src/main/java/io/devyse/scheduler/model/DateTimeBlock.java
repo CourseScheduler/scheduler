@@ -244,4 +244,22 @@ public interface DateTimeBlock extends Comparable<DateTimeBlock>{
 		);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public static String toString(DateTimeBlock block){
+		StringBuilder sb = new StringBuilder();	
+		
+		sb.append(block.getDayOfWeek());
+		sb.append(" ");
+		sb.append(block.getStartTime());
+		sb.append("-");						//TODO what should this string look like? 
+		sb.append(block.getEndTime());
+		sb.append("");
+		sb.append(block.getStartDate().toString());
+		sb.append(" ");
+		sb.append(block.getEndDate().toString());
+		
+		return sb.toString();
+	}
 }

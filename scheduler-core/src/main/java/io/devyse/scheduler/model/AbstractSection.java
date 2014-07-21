@@ -186,4 +186,13 @@ public abstract class AbstractSection implements Section {
 		if(obj instanceof Section){ return this.equals((Section)obj); }
 		else return false;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return Section.toString(this);
+	}
+	
 }

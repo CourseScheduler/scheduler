@@ -90,4 +90,17 @@ public interface Term extends Comparable<Term> {
 		}
 		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public static String toString(Term term){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(term.getUniversity());
+		sb.append("-");
+		sb.append(term.getName());
+		
+		return sb.toString();
+	}
 }
