@@ -126,4 +126,17 @@ public interface Section extends Comparable<Section> {
 		
 		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public static String toString(Section section){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(section.getCourseId());
+		sb.append("-");
+		sb.append(section.getSectionId());
+		
+		return sb.toString();
+	}
 }
