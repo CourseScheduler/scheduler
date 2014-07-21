@@ -122,5 +122,12 @@ public abstract class AbstractTerm implements Term {
 		if(obj instanceof Term) { return this.equals((Term)obj); }
 		else return false;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return Term.toString(this);
+	}
 }
