@@ -106,6 +106,6 @@ public abstract class AbstractUniversity implements University {
 	 */
 	@Override
 	public String toString() {
-		return this.getName();
+		return University.toString(this);
 	}
 }
