@@ -211,6 +211,14 @@ public abstract class AbstractMeeting implements Meeting {
 		return this.getHashCode();
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return Meeting.toString(this);
+	}
+
 	/**
 	 * Create a new AbstractMeeting for the specified Section in the 
 	 * specified DateTimeBlock

@@ -137,5 +137,21 @@ public interface Meeting extends Comparable<Meeting> {
 		
 		return value;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public static String toString(Meeting meeting){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(meeting.getCampus());
+		sb.append("-");
+		sb.append(meeting.getBuilding());
+		sb.append("-");
+		sb.append(meeting.getRoom());
+		sb.append(" ");
+		sb.append(meeting.getDateTimeBlock());
+		
+		return sb.toString();
+	}
 }
