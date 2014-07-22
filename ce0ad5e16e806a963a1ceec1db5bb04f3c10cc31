@@ -10,3 +10,16 @@ Git Commit Information
 Repository: git@github.com:CourseScheduler/scheduler.git
 Branch: origin/feature/datamodel
 Commit: ce0ad5e16e806a963a1ceec1db5bb04f3c10cc31
+
+General Jenkins Build Information
+--------------------------------------------------------------------------
+ID: 2014-07-22_01-23-05
+Number: 17
+URL: https://coursescheduler.ci.cloudbees.com/job/scheduler/17/
+Tag: jenkins-scheduler-17
+
+Git Commit Information
+--------------------------------------------------------------------------
+Repository: git@github.com:CourseScheduler/scheduler.git
+Branch: origin/feature/datamodel
+Commit: ce0ad5e16e806a963a1ceec1db5bb04f3c10cc31
