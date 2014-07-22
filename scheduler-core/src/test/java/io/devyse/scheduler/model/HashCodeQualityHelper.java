@@ -24,12 +24,16 @@
 package io.devyse.scheduler.model;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LongSummaryStatistics;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Random;
-import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.testng.asserts.SoftAssert;
 
@@ -44,7 +48,7 @@ import org.testng.asserts.SoftAssert;
  *
  */
 public class HashCodeQualityHelper {
-	
+
 	/**
 	 * Funtional interface defining an object generator based on a Random
 	 * source for initializing fields. This will yield varietous, if not
@@ -83,33 +87,38 @@ public class HashCodeQualityHelper {
 	 * of desired distribution and collision resistance. 
 	 *
 	 * @param instanceSupplier the RandomGenerator method to create instances
-	 * @param seed the PRNG seed
 	 * @param sampleSize the number of objects to hash
 	 * @param maxHashCollisionLimit maximum number of per hash collisions 
 	 * @param avgHashCollisionLimit average number of per set collisions
 	 */
-	public static void confirmHashCodeQuality(RandomGenerator instanceSupplier, long seed, int sampleSize, int maxHashCollisionLimit, int avgHashCollisionLimit){
-		Random generator = new Random(seed);
-		Map<Integer, Integer> hashCodes = new HashMap<Integer, Integer>();
-		Set<Object> instances = new HashSet<Object>();
+	public static void confirmHashCodeQuality(Iterator<Object> iterator, int sampleSize, int maxHashCollisionLimit, int avgHashCollisionLimit){
+		Stream<Object> stream = StreamSupport.stream(
+				Spliterators.spliterator(iterator, sampleSize, Spliterator.SIZED),
+				true
+		);
 		
-		for(int bottom = 0; bottom < sampleSize; bottom++){
-			Object block = instanceSupplier.generate(generator);
-			
-			if(!instances.contains(block)){
-				Integer hashCode = Integer.valueOf(block.hashCode());
-				Integer occurrences = hashCodes.get(hashCode);
-				if(occurrences == null){
-					occurrences = 0;
-				}
-				hashCodes.put(hashCode, occurrences+1);
-				instances.add(block);
-			}
-		}
+		confirmHashCodeQuality(stream, maxHashCollisionLimit, avgHashCollisionLimit);
+	}
 		
-		Collection<Integer> occurrenceCount = hashCodes.values();
-		int maxCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).max().getAsInt();
-		double averageCollisions = occurrenceCount.stream().mapToInt(Integer::intValue).average().getAsDouble();
+	/**
+	 * Verify that the hashCode method of the objects under test exhibit some level
+	 * of desired distribution and collision resistance.
+	 *
+	 * @param stream the stream of objects to test for hash quality
+	 * @param maxHashCollisionLimit maximum number of per hash collisions 
+	 * @param avgHashCollisionLimit average number of per set collisions
+	 */
+	public static void confirmHashCodeQuality(Stream<Object> stream, int maxHashCollisionLimit, int avgHashCollisionLimit){
+		Map<Integer, Long> hashCodes = stream.parallel()
+				.distinct()
+				.collect(Collectors.groupingByConcurrent(Object::hashCode,Collectors.counting()));
+		
+		LongSummaryStatistics stats = hashCodes.values().parallelStream()
+				.mapToLong(Long::longValue)
+				.summaryStatistics();
+		
+		long maxCollisions = stats.getMax();
+		double averageCollisions = stats.getAverage();
 		
 		SoftAssert hcq = new SoftAssert();
 		
@@ -128,9 +137,19 @@ public class HashCodeQualityHelper {
 	 * @param maxHashCollisionLimit maximum number of per hash collisions 
 	 * @param avgHashCollisionLimit average number of per set collisions
 	 */
-	public static void confirmHashCodeQuality(Collection<Object> collection, long seed, int maxHashCollisionLimit, int avgHashCollisionLimit){
-		Iterator<Object> iterator = collection.iterator();
-		confirmHashCodeQuality((Random r) -> {return iterator.next();}, seed, collection.size(), maxHashCollisionLimit, avgHashCollisionLimit);
+	public static void confirmHashCodeQuality(Collection<Object> collection, int maxHashCollisionLimit, int avgHashCollisionLimit){
+		confirmHashCodeQuality(collection.iterator(), collection.size(), maxHashCollisionLimit, avgHashCollisionLimit);
+	}
+	
+	/**
+	 * Verify that the hashCode method of the objects under test exhibit some level
+	 * of desired distribution and collision resistance. 
+	 *
+	 * @param instanceSupplier the RandomGenerator method
+	 * @param sampleSize the number of samples to generate
+	 */
+	public static void confirmHashCodeQuality(Iterator<Object> iterator, int sampleSize){
+		confirmHashCodeQuality(iterator, sampleSize, MAX_COLLISIONS_PER_HASH, AVG_COLLISIONS_PER_SET);
 	}
 	
 	/**
@@ -139,18 +158,55 @@ public class HashCodeQualityHelper {
 	 *
 	 * @param instanceSupplier the RandomGenerator method
 	 */
-	public static void confirmHashCodeQuality(RandomGenerator instanceSupplier){
-		confirmHashCodeQuality(instanceSupplier, RANDOM_GENERATOR_SEED, SAMPLE_SIZE, MAX_COLLISIONS_PER_HASH, AVG_COLLISIONS_PER_SET);
+	public static void confirmHashCodeQuality(Iterator<Object> iterator){
+		confirmHashCodeQuality(iterator, SAMPLE_SIZE, MAX_COLLISIONS_PER_HASH, AVG_COLLISIONS_PER_SET);
 	}
 	
 	/**
-	 *Verify that the hashCode method of the objects under test exhibit some level
+	 * Verify that the hashCode method of the objects under test exhibit some level
 	 * of desired distribution and collision resistance. 
 	 *
 	 * @param iterator an iterator of the objects to test
 	 */
 	public static void confirmHashCodeQuality(Collection<Object> collection){
-		confirmHashCodeQuality(collection, RANDOM_GENERATOR_SEED, MAX_COLLISIONS_PER_HASH, AVG_COLLISIONS_PER_SET);
+		confirmHashCodeQuality(collection, MAX_COLLISIONS_PER_HASH, AVG_COLLISIONS_PER_SET);
+	}
+	
+	/**
+	 * Confirm the hashCode quality for instances built using the specified generator. 
+	 * Generates the specified sample size
+	 *
+	 * @param generator the object generator for building instances
+	 * @param sampleSize the number of objects to instantiate for testing hashes
+	 */
+	public static void confirmHashCodeQuality(RandomGenerator generator, int sampleSize){
+		confirmHashCodeQuality(new Iterator<Object>(){
+			
+			private int count = 0;
+			private Random random = new Random(RANDOM_GENERATOR_SEED);
+			
+			@Override
+			public boolean hasNext() {
+				return count < sampleSize;
+			}
+
+			@Override
+			public Object next() {
+				if(count < sampleSize) { count++; return generator.generate(random); }
+				throw new NoSuchElementException("Sample Size exceeded");
+			}
+			
+		});
+	}
+	
+	/**
+	 * Confirm the hashCode quality for instances built using the specified generator. 
+	 * Uses the default sample size..
+	 *
+	 * @param generator the object generator for building instances
+	 */
+	public static void confirmHashCodeQuality(RandomGenerator generator){
+		confirmHashCodeQuality(generator, SAMPLE_SIZE);
 	}
 	
 }
